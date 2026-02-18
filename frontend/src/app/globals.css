@@ -32,6 +32,22 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
+  .skip-link {
+    position: absolute;
+    left: -9999px;
+    z-index: 999;
+    padding: 0.75rem 1.25rem;
+    font-weight: 600;
+    background-color: var(--color-gold);
+    color: var(--color-midnight);
+    border-radius: 0.5rem;
+    transition: left 0.2s ease;
+  }
+  .skip-link:focus {
+    left: 1.25rem;
+    top: 1.25rem;
+  }
+
   body {
     background-color: var(--color-midnight);
     color: var(--color-ivory);
@@ -85,6 +101,37 @@
   .glow-hover:hover {
     border-color: rgba(201, 169, 110, 0.2);
     box-shadow: 0 0 30px rgba(201, 169, 110, 0.08), 0 8px 32px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Professional icon container for cards */
+  .icon-container {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 1rem;
+    background: linear-gradient(135deg, rgba(201, 169, 110, 0.12) 0%, rgba(201, 169, 110, 0.04) 100%);
+    color: var(--color-amber);
+    transition: all 0.3s ease;
+  }
+  .icon-container:hover {
+    background: linear-gradient(135deg, rgba(201, 169, 110, 0.18) 0%, rgba(201, 169, 110, 0.08) 100%);
+    box-shadow: 0 0 24px rgba(201, 169, 110, 0.08);
+  }
+
+  /* Smaller icon container for badges */
+  .icon-container.icon-container-sm {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.75rem;
+  }
+
+  /* Larger icon container for services */
+  .icon-container.icon-container-lg {
+    width: 4rem;
+    height: 4rem;
+    border-radius: 1.25rem;
   }
 
   /* Navigation glass */
@@ -160,8 +207,15 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html { }
-  .animate-float, .animate-float-delayed, .animate-float-slow, .animate-spin-slow, .animate-pulse-soft {
-    animation: none;
+  html {
+    scroll-behavior: auto;
+  }
+  .animate-float,
+  .animate-float-delayed,
+  .animate-float-slow,
+  .animate-spin-slow,
+  .animate-pulse-soft,
+  .shimmer-hover::after {
+    animation: none !important;
   }
 }

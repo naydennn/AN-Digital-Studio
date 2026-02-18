@@ -1,4 +1,12 @@
 export interface Dictionary {
+  a11y: {
+    skipToContent: string;
+    openMenu: string;
+    closeMenu: string;
+    visitFacebook: string;
+    visitInstagram: string;
+    visitLinkedIn: string;
+  };
   nav: {
     home: string;
     about: string;
@@ -45,10 +53,12 @@ export interface Dictionary {
   };
   portfolio: {
     label: string;
+    filterAriaLabel: string;
     heading: string;
     headingAccent: string;
     sub: string;
     categories: string[];
+    moreProjects: string;
     items: { title: string; description: string }[];
   };
   latestPosts: {
@@ -64,8 +74,8 @@ export interface Dictionary {
     headingAccent: string;
     sub: string;
     emailLabel: string;
-    locationLabel: string;
-    locationValue: string;
+    phoneLabel: string;
+    phoneValue: string;
     formName: string;
     formEmail: string;
     formSubject: string;
@@ -89,6 +99,8 @@ export interface Dictionary {
     sub: string;
     backToBlog: string;
     minRead: string;
+    categoryLabels: Record<string, string>;
+    posts: Record<string, { title: string; excerpt: string; content: string; category: string; tags: string[] }>;
   };
   notFound: {
     title: string;

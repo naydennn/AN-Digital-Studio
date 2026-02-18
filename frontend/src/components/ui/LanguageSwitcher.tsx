@@ -11,7 +11,11 @@ const LOCALE_LABELS: Record<Locale, string> = {
 
 const LOCALE_COOKIE = "NEXT_LOCALE";
 
-export default function LanguageSwitcher() {
+interface LanguageSwitcherProps {
+  compact?: boolean;
+}
+
+export default function LanguageSwitcher({ compact = false }: LanguageSwitcherProps) {
   const { locale } = useTranslation();
   const pathname = usePathname();
   const router = useRouter();
@@ -27,17 +31,27 @@ export default function LanguageSwitcher() {
   };
 
   return (
-    <div className="flex items-center rounded-full border border-gold-border/15 bg-graphite/60 p-0.5">
+    <div
+      role="group"
+      aria-label="Language"
+      className={`inline-flex rounded-full border border-gold-border/10 bg-charcoal/90 p-0.5 transition-all duration-300 ${
+        compact ? "p-px" : ""
+      }`}
+    >
       {LOCALES.map((loc) => (
         <button
           key={loc}
+          type="button"
           onClick={() => switchLocale(loc)}
-          className={`relative rounded-full px-3 py-1 text-[11px] font-semibold tracking-wide transition-all duration-300 ${
+          className={`rounded-full px-3.5 py-1.5 text-[11px] font-semibold tracking-wide transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-gold/30 focus:ring-offset-2 focus:ring-offset-midnight touch-manipulation ${
+            compact ? "px-3 py-1 text-[10px]" : ""
+          } ${
             locale === loc
-              ? "gradient-gold-bg text-midnight shadow-sm"
-              : "text-stone hover:text-ivory"
+              ? "gradient-gold-bg text-midnight"
+              : "text-stone hover:text-ivory hover:bg-white/5"
           }`}
           aria-label={`Switch to ${loc === "en" ? "English" : "Bulgarian"}`}
+          aria-current={locale === loc ? "true" : undefined}
         >
           {LOCALE_LABELS[loc]}
         </button>

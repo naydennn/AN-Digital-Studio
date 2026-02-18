@@ -1,12 +1,12 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Montserrat } from "next/font/google";
 import { notFound } from "next/navigation";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import {
   OrganizationJsonLd,
-  ServicesJsonLd,
   WebSiteJsonLd,
+  ServicesJsonLd,
 } from "@/components/seo/JsonLd";
 import { TranslationProvider } from "@/i18n/TranslationContext";
 import { getDictionary } from "@/i18n/get-dictionary";
@@ -94,6 +94,12 @@ export async function generateMetadata({
   };
 }
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
+
 export default async function LocaleLayout({
   children,
   params,
@@ -109,6 +115,8 @@ export default async function LocaleLayout({
 
   const dict = await getDictionary(locale as Locale);
 
+  const skipLabel = dict.a11y.skipToContent;
+
   return (
     <html
       lang={locale}
@@ -117,11 +125,20 @@ export default async function LocaleLayout({
     >
       <body className="font-body antialiased">
         <TranslationProvider dict={dict} locale={locale as Locale}>
-          <OrganizationJsonLd />
-          <WebSiteJsonLd locale={locale} />
+          <OrganizationJsonLd locale={locale as Locale} />
+          <WebSiteJsonLd
+            locale={locale as Locale}
+            description={locale === "bg" ? dict.footer.description : dict.hero.sub}
+          />
           <ServicesJsonLd services={dict.services.items} />
+          <a
+            href="#main-content"
+            className="skip-link focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2 focus:ring-offset-midnight"
+          >
+            {skipLabel}
+          </a>
           <Header />
-          <main>{children}</main>
+          <main id="main-content">{children}</main>
           <Footer />
         </TranslationProvider>
       </body>

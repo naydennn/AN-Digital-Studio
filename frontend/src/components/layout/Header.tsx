@@ -1,14 +1,16 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "@/i18n/TranslationContext";
 import LanguageSwitcher from "@/components/ui/LanguageSwitcher";
 import { SITE_NAME } from "@/lib/constants";
 
 const SCROLL_THRESHOLD = 50;
+const SECTION_IDS = ["hero", "about", "services", "portfolio", "contact"] as const;
 
 const panelVariants = {
   closed: { x: "100%" },
@@ -33,16 +35,19 @@ const linkVariants = {
 
 export default function Header() {
   const { dict, locale } = useTranslation();
+  const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState<string>("hero");
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
 
   const NAV_ITEMS = [
-    { label: dict.nav.home, href: `/${locale}/#hero` },
-    { label: dict.nav.about, href: `/${locale}/#about` },
-    { label: dict.nav.services, href: `/${locale}/#services` },
-    { label: dict.nav.portfolio, href: `/${locale}/#portfolio` },
-    { label: dict.nav.contact, href: `/${locale}/#contact` },
-    { label: dict.nav.blog, href: `/${locale}/blog` },
+    { label: dict.nav.home, href: `/${locale}/#hero`, sectionId: "hero" },
+    { label: dict.nav.about, href: `/${locale}/#about`, sectionId: "about" },
+    { label: dict.nav.services, href: `/${locale}/#services`, sectionId: "services" },
+    { label: dict.nav.portfolio, href: `/${locale}/#portfolio`, sectionId: "portfolio" },
+    { label: dict.nav.contact, href: `/${locale}/#contact`, sectionId: "contact" },
+    { label: dict.nav.blog, href: `/${locale}/blog`, sectionId: "blog" },
   ];
 
   useEffect(() => {
@@ -51,6 +56,35 @@ export default function Header() {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    if (pathname.includes("/blog")) {
+      setActiveSection("blog");
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const intersecting = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => {
+            const aIdx = SECTION_IDS.indexOf(a.target.id as (typeof SECTION_IDS)[number]);
+            const bIdx = SECTION_IDS.indexOf(b.target.id as (typeof SECTION_IDS)[number]);
+            return bIdx - aIdx;
+          });
+        if (intersecting.length > 0) {
+          setActiveSection(intersecting[0].target.id);
+        }
+      },
+      { rootMargin: "0px 0px -55% 0px", threshold: 0 }
+    );
+
+    SECTION_IDS.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+    return () => observer.disconnect();
+  }, [pathname]);
 
   useEffect(() => {
     document.body.style.overflow = isOpen ? "hidden" : "";
@@ -62,35 +96,37 @@ export default function Header() {
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        isScrolled ? "glass-nav py-3" : "py-5"
+        isScrolled
+          ? "glass-nav pt-[calc(env(safe-area-inset-top)+0.5rem)] pb-2.5"
+          : "pt-[calc(env(safe-area-inset-top)+1.5rem)] pb-5"
       }`}
     >
-      <nav className="container mx-auto flex items-center justify-between px-5 sm:px-6 lg:px-8">
+      <nav className="container mx-auto flex items-center justify-between gap-6 px-5 sm:px-6 lg:px-8 lg:gap-10">
         {/* Logo */}
         <Link
           href={`/${locale}`}
-          className="relative z-50 flex items-center gap-3 group"
+          className={`relative z-50 flex items-center gap-3 group transition-all duration-500 lg:gap-4 ${isScrolled ? "gap-2 lg:gap-3" : ""}`}
         >
           <Image
             src="/logo.png"
             alt={SITE_NAME}
             width={48}
             height={48}
-            className="h-9 w-9 sm:h-10 sm:w-10 transition-transform duration-300 group-hover:scale-105"
+            className={`transition-all duration-500 group-hover:scale-105 ${isScrolled ? "h-8 w-8 sm:h-9 sm:w-9" : "h-9 w-9 sm:h-10 sm:w-10"}`}
             priority
           />
-          <span className="hidden font-display text-lg font-semibold tracking-tight text-ivory sm:block">
+          <span className={`hidden font-display font-semibold tracking-tight text-ivory transition-all duration-500 sm:block ${isScrolled ? "text-base" : "text-lg"}`}>
             {SITE_NAME}
           </span>
         </Link>
 
         {/* Desktop Nav */}
-        <ul className="hidden items-center gap-1 lg:flex">
+        <ul className="hidden items-center gap-1 lg:flex lg:gap-6">
           {NAV_ITEMS.map((link) => (
             <li key={link.label}>
               <Link
                 href={link.href}
-                className="relative rounded-lg px-4 py-2 text-[13px] font-medium text-stone transition-colors duration-300 hover:text-ivory"
+                className={`relative rounded-lg px-4 py-2 text-[13px] font-medium text-stone transition-all duration-500 hover:text-ivory focus:outline-none focus:ring-2 focus:ring-gold/30 focus:ring-offset-2 focus:ring-offset-midnight focus:text-ivory lg:px-5 ${isScrolled ? "py-1.5 text-[12px] lg:px-4" : "py-2.5"}`}
               >
                 {link.label}
               </Link>
@@ -99,11 +135,11 @@ export default function Header() {
         </ul>
 
         {/* Desktop CTA + Switcher */}
-        <div className="hidden items-center gap-3 lg:flex">
-          <LanguageSwitcher />
+        <div className="hidden items-center gap-5 lg:flex lg:gap-8">
+          <LanguageSwitcher compact={isScrolled} />
           <Link
             href={`/${locale}/#contact`}
-            className="rounded-full gradient-gold-bg px-7 py-2.5 text-[13px] font-bold text-midnight transition-all duration-300 hover:shadow-lg hover:shadow-gold/20 hover:brightness-110"
+            className={`rounded-full gradient-gold-bg font-bold text-midnight transition-all duration-500 hover:shadow-lg hover:shadow-gold/20 hover:brightness-110 ${isScrolled ? "px-5 py-2 text-xs" : "px-7 py-2.5 text-[13px]"}`}
           >
             {dict.nav.getStarted}
           </Link>
@@ -111,10 +147,13 @@ export default function Header() {
 
         {/* Mobile Hamburger */}
         <button
+          ref={menuButtonRef}
+          id="mobile-menu-button"
           onClick={() => setIsOpen(!isOpen)}
-          className="relative z-50 flex h-10 w-10 items-center justify-center lg:hidden"
-          aria-label="Toggle menu"
+          className="relative z-50 flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg transition-colors hover:bg-gold/5 focus:outline-none focus:ring-2 focus:ring-gold/30 focus:ring-offset-2 focus:ring-offset-midnight touch-manipulation lg:hidden"
+          aria-label={isOpen ? dict.a11y.closeMenu : dict.a11y.openMenu}
           aria-expanded={isOpen}
+          aria-controls="mobile-nav-panel"
         >
           <div className="flex w-5 flex-col gap-[5px]">
             <span
@@ -145,10 +184,17 @@ export default function Header() {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.25 }}
                 className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm"
-                onClick={() => setIsOpen(false)}
+                onClick={() => {
+                  setIsOpen(false);
+                  menuButtonRef.current?.focus();
+                }}
               />
 
               <motion.div
+                id="mobile-nav-panel"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="mobile-menu-button"
                 variants={panelVariants}
                 initial="closed"
                 animate="open"
@@ -157,23 +203,31 @@ export default function Header() {
               >
                 <div className="flex flex-1 flex-col justify-center px-10">
                   <nav className="space-y-1">
-                    {NAV_ITEMS.map((link, i) => (
-                      <motion.div
-                        key={link.label}
-                        custom={i}
-                        variants={linkVariants}
-                        initial="closed"
-                        animate="open"
-                      >
-                        <Link
-                          href={link.href}
-                          onClick={() => setIsOpen(false)}
-                          className="block py-3.5 font-display text-xl font-medium text-stone transition-colors hover:text-gold"
+                    {NAV_ITEMS.map((link, i) => {
+                      const isActive = link.sectionId === activeSection;
+                      return (
+                        <motion.div
+                          key={link.label}
+                          custom={i}
+                          variants={linkVariants}
+                          initial="closed"
+                          animate="open"
                         >
-                          {link.label}
-                        </Link>
-                      </motion.div>
-                    ))}
+                          <Link
+                            href={link.href}
+                            onClick={() => setIsOpen(false)}
+                            aria-current={isActive ? "page" : undefined}
+                            className={`block rounded-lg border-l-2 py-3.5 pl-4 -ml-4 pr-4 font-display text-xl font-medium transition-colors duration-200 focus:outline-none focus:ring-0 ${
+                              isActive
+                                ? "border-l-gold bg-gold/[0.07] text-gold"
+                                : "border-transparent text-stone hover:bg-gold/5 hover:text-gold focus:border-l-gold focus:bg-gold/[0.07] focus:text-gold"
+                            }`}
+                          >
+                            {link.label}
+                          </Link>
+                        </motion.div>
+                      );
+                    })}
                   </nav>
 
                   {/* Mobile language switcher */}
@@ -207,7 +261,7 @@ export default function Header() {
                   </motion.div>
                 </div>
 
-                <div className="border-t border-gold-border/8 px-10 py-6">
+                <div className="border-t border-gold-border/10 px-10 py-6">
                   <p className="text-xs text-ash">hello@andigital.bg</p>
                 </div>
               </motion.div>

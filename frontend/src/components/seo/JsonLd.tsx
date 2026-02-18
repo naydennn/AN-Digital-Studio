@@ -1,19 +1,39 @@
-import { SITE_NAME, SITE_DESCRIPTION, SITE_URL } from "@/lib/constants";
+import {
+  SITE_NAME,
+  SITE_DESCRIPTION,
+  SITE_DESCRIPTION_BG,
+  SITE_URL,
+  ORGANIZATION_ID,
+} from "@/lib/constants";
 
-/* ─── Organization ─── */
+type Locale = "en" | "bg";
 
-export function OrganizationJsonLd() {
+const LOCALE_LANG = { en: "en", bg: "bg" } as const;
+const LOCALE_BCP47 = { en: "en-US", bg: "bg-BG" } as const;
+
+/* ─── Organization + LocalBusiness (AI Search: entity depth, @id) ─── */
+
+export function OrganizationJsonLd({ locale }: { locale: Locale }) {
+  const description =
+    locale === "bg" ? SITE_DESCRIPTION_BG : SITE_DESCRIPTION;
   const data = {
     "@context": "https://schema.org",
-    "@type": "Organization",
+    "@type": ["Organization", "LocalBusiness", "ProfessionalService"],
+    "@id": ORGANIZATION_ID,
     name: SITE_NAME,
-    description: SITE_DESCRIPTION,
+    alternateName: locale === "bg" ? "AN Digital Studio София" : "AN Digital Studio Sofia",
+    description,
     url: SITE_URL,
-    logo: `${SITE_URL}/logo.png`,
+    logo: { "@type": "ImageObject", url: `${SITE_URL}/logo.png` },
+    image: `${SITE_URL}/logo.png`,
+    inLanguage: LOCALE_LANG[locale],
+    areaServed: { "@type": "Country", name: "Bulgaria" },
     contactPoint: {
       "@type": "ContactPoint",
       email: "hello@andigital.bg",
       contactType: "customer service",
+      areaServed: "BG",
+      availableLanguage: ["English", "Bulgarian"],
     },
     address: {
       "@type": "PostalAddress",
@@ -35,16 +55,26 @@ export function OrganizationJsonLd() {
   );
 }
 
-/* ─── WebSite (AI Search Optimization) ─── */
+/* ─── WebSite (AI Search: alternateLanguage, speakable) ─── */
 
-export function WebSiteJsonLd({ locale }: { locale: string }) {
+export function WebSiteJsonLd({
+  locale,
+  description,
+}: {
+  locale: Locale;
+  description: string;
+}) {
+  const alternateLang = locale === "bg" ? "en" : "bg";
   const data = {
     "@context": "https://schema.org",
     "@type": "WebSite",
     name: SITE_NAME,
+    alternateName: "AN Digital Studio",
+    description,
     url: `${SITE_URL}/${locale}`,
-    inLanguage: locale === "bg" ? "bg" : "en",
-    publisher: { "@type": "Organization", name: SITE_NAME },
+    inLanguage: LOCALE_BCP47[locale],
+    alternateLanguage: LOCALE_BCP47[alternateLang],
+    publisher: { "@id": ORGANIZATION_ID },
     potentialAction: {
       "@type": "SearchAction",
       target: {
@@ -52,6 +82,10 @@ export function WebSiteJsonLd({ locale }: { locale: string }) {
         urlTemplate: `${SITE_URL}/${locale}/blog?q={search_term_string}`,
       },
       "query-input": "required name=search_term_string",
+    },
+    speakable: {
+      "@type": "SpeakableSpecification",
+      cssSelector: ["#hero", "#about", "#services"],
     },
   };
 
@@ -63,7 +97,35 @@ export function WebSiteJsonLd({ locale }: { locale: string }) {
   );
 }
 
-/* ─── Services (locale-aware) ─── */
+/* ─── BreadcrumbList (AI Search: site structure) ─── */
+
+export function BreadcrumbJsonLd({
+  locale,
+  items,
+}: {
+  locale: Locale;
+  items: { name: string; url: string }[];
+}) {
+  const data = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((item, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: item.name,
+      item: item.url,
+    })),
+  };
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
+    />
+  );
+}
+
+/* ─── Services (locale-aware, provider @id) ─── */
 
 export function ServicesJsonLd({
   services,
@@ -74,7 +136,7 @@ export function ServicesJsonLd({
     "@context": "https://schema.org",
     "@type": "Service",
     serviceType: service.title,
-    provider: { "@type": "Organization", name: SITE_NAME },
+    provider: { "@id": ORGANIZATION_ID },
     description: service.description,
   }));
 
@@ -86,7 +148,7 @@ export function ServicesJsonLd({
   );
 }
 
-/* ─── Blog Post ─── */
+/* ─── Blog Post (AI Search: inLanguage, mainEntityOfPage) ─── */
 
 interface BlogPostJsonLdProps {
   title: string;
@@ -94,6 +156,7 @@ interface BlogPostJsonLdProps {
   datePublished: string;
   author: string;
   url: string;
+  locale: Locale;
   image?: string;
 }
 
@@ -103,6 +166,7 @@ export function BlogPostJsonLd({
   datePublished,
   author,
   url,
+  locale,
   image,
 }: BlogPostJsonLdProps) {
   const data = {
@@ -111,12 +175,10 @@ export function BlogPostJsonLd({
     headline: title,
     description,
     datePublished,
+    inLanguage: LOCALE_BCP47[locale],
     author: { "@type": "Person", name: author },
-    publisher: {
-      "@type": "Organization",
-      name: SITE_NAME,
-      logo: { "@type": "ImageObject", url: `${SITE_URL}/logo.png` },
-    },
+    publisher: { "@id": ORGANIZATION_ID },
+    mainEntityOfPage: { "@type": "WebPage", "@id": url },
     url,
     ...(image && { image: { "@type": "ImageObject", url: image } }),
   };

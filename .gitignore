@@ -1,7 +1,10 @@
-# Environment variables
+# Environment variables (sensitive - use Vercel env vars for production)
 .env
 .env.local
-.env.*.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env*.local
 
 # Dependencies
 node_modules/
@@ -23,30 +26,30 @@ dist/
 .DS_Store
 *.pem
 
-# Debug
+# Debug & logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
+*.log
 
-# Local env files
-.env*.local
-
-# IDEs
+# IDEs & editors (not needed for Vercel deploy)
 .vscode/
 .idea/
-*.swp
-*.swo
-*~
-.project
-.classpath
+.cursor/
+.agents/
 
 # OS
 Thumbs.db
 .DS_Store
 
-# Vercel
+# Vercel (deployment cache, not needed in repo)
 .vercel
+
+# Build caches
+.turbo
+.eslintcache
+.cache/
 
 # yarn
 .yarn/cache
@@ -54,3 +57,10 @@ Thumbs.db
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# Editor temp files
+*.swp
+*.swo
+*~
+.project
+.classpath

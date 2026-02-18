@@ -1,6 +1,14 @@
 import type { Dictionary } from "./types";
 
 const en: Dictionary = {
+  a11y: {
+    skipToContent: "Skip to main content",
+    openMenu: "Open menu",
+    closeMenu: "Close menu",
+    visitFacebook: "Visit us on Facebook",
+    visitInstagram: "Visit us on Instagram",
+    visitLinkedIn: "Visit us on LinkedIn",
+  },
   nav: {
     home: "Home",
     about: "About",
@@ -24,8 +32,8 @@ const en: Dictionary = {
     label: "About Us",
     heading: "We Build Websites That ",
     headingAccent: "Actually Perform",
-    p1: "AN Digital Studio is a full-service digital agency based in Sofia, Bulgaria. We combine strategic thinking with creative design and cutting-edge technology to deliver websites that don't just look beautiful — they convert visitors into customers.",
-    p2: "Every project starts with understanding your business. We obsess over the details — from pixel-perfect design and smooth animations to lightning-fast load times and search engine optimization. The result? Digital experiences that leave a lasting impression.",
+    p1: "AN Digital Studio is a digital agency specializing in web design, websites, logos, business cards, and other digital materials. Our team pours heart into every project. Each one is unique and aligned with your ideas and brand identity. We help build brand identity when you're unsure — clear guidance, the right questions. Our portfolio speaks for itself.",
+    p2: "We help small and medium businesses grow online — in Bulgaria and beyond. We're growing and ready to create websites for clients worldwide. High quality at accessible prices so businesses with potential can be noticed. Our goal: everyone gets a chance to showcase their idea.",
     badge1Title: "100% Custom",
     badge1Sub: "No templates",
     badge2Title: "Blazing Fast",
@@ -65,7 +73,7 @@ const en: Dictionary = {
       { label: "Projects Completed" },
       { label: "Happy Clients" },
       { label: "Years Experience" },
-      { label: "Awards Won" },
+      { label: "Satisfaction Rate" },
     ],
   },
   services: {
@@ -108,17 +116,19 @@ const en: Dictionary = {
   },
   portfolio: {
     label: "Our Work",
+    filterAriaLabel: "Filter projects",
     heading: "Featured ",
     headingAccent: "Projects",
     sub: "A showcase of our best work across web design, development, and digital branding.",
-    categories: ["All", "Web Design", "Development", "E-Commerce", "Branding"],
+    categories: ["All", "Web Design", "E-Commerce"],
+    moreProjects: "We've delivered many more — each project is custom to the client's requirements.",
     items: [
-      { title: "TechVision Platform", description: "Full-stack SaaS platform with real-time analytics dashboard" },
-      { title: "Luxe Fashion Store", description: "Premium e-commerce experience with 40% conversion increase" },
-      { title: "GreenLife Organics", description: "Clean, modern brand identity and responsive website" },
-      { title: "FinanceHub App", description: "Personal finance management app with bank integrations" },
-      { title: "Artisan Coffee Co.", description: "Complete brand overhaul from logo to digital presence" },
-      { title: "CloudSync Solutions", description: "Enterprise SaaS landing page with 60% lead increase" },
+      { title: "Pokanime", description: "Digital invitations platform for weddings and events. Personalized designs, RSVP management, and photo gallery." },
+      { title: "Mihaela Foods & Bakery", description: "Family fast-food restaurant and bakery in Plovdiv. Cozy website with menu, gallery, and contact info." },
+      { title: "City Computers", description: "IT store and computer repair service in Plovdiv. 20+ years experience, subscription support, and custom builds." },
+      { title: "CloudSeven", description: "Premium adjustable memory foam pillow. E-commerce with product customization and subscription options." },
+      { title: "CN Diets", description: "Clinical nutrition and dietetic services. Personalized diet programs, consultations, and wellness solutions." },
+      { title: "MC Pro Clothing", description: "Motorcycle clothing e-commerce. T-shirts, hoodies, caps from Classic Team, Enduro Team, Sportbike Team. Free shipping over 120 BGN." },
     ],
   },
   latestPosts: {
@@ -134,8 +144,8 @@ const en: Dictionary = {
     headingAccent: "Amazing Together",
     sub: "Have a project in mind? We'd love to hear about it. Send us a message and we'll get back to you within 24 hours.",
     emailLabel: "Email",
-    locationLabel: "Location",
-    locationValue: "Sofia, Bulgaria",
+    phoneLabel: "Phone",
+    phoneValue: "+359 8888 06 557",
     formName: "Your Name",
     formEmail: "Email Address",
     formSubject: "Subject",
@@ -160,6 +170,30 @@ const en: Dictionary = {
     sub: "Tips, trends, and insights on web design, development, and digital growth.",
     backToBlog: "Back to Blog",
     minRead: "min read",
+    categoryLabels: { Design: "Design", Development: "Development", SEO: "SEO", General: "General" } as Record<string, string>,
+    posts: {
+      "why-mobile-first-design-matters": {
+        title: "Why Mobile-First Design Matters in 2026",
+        excerpt: "With over 60% of web traffic coming from mobile devices, designing for mobile first is no longer optional.",
+        content: `<p>With over 60% of web traffic now coming from mobile devices, designing for mobile first is no longer a nice-to-have — it's a fundamental requirement for any successful digital project.</p><h2>What is Mobile-First Design?</h2><p>Mobile-first design is a strategy where you design for the smallest screen first and then progressively enhance the experience for larger screens.</p><h2>Why It Matters</h2><p>Google uses mobile-first indexing, meaning it primarily uses the mobile version of your site for ranking and indexing. If your mobile experience is poor, your search rankings will suffer.</p><h2>Key Principles</h2><ul><li>Start with the smallest viewport and scale up</li><li>Prioritize content hierarchy</li><li>Use touch-friendly interactive elements</li><li>Optimize images and assets for mobile networks</li><li>Test on real devices, not just emulators</li></ul><p>At AN Digital Studio, every website we build starts with mobile.</p>`,
+        category: "Design",
+        tags: [],
+      },
+      "headless-wordpress-nextjs-guide": {
+        title: "The Complete Guide to Headless WordPress with Next.js",
+        excerpt: "Learn how to combine the power of WordPress content management with the speed of Next.js.",
+        content: `<p>Headless WordPress combines the familiar content management experience of WordPress with the blazing-fast performance of modern frontend frameworks like Next.js.</p><h2>What is Headless WordPress?</h2><p>In a traditional WordPress setup, the same application handles both content management and rendering. In a headless setup, WordPress serves purely as a content backend.</p><h2>Why Go Headless?</h2><p>The benefits are significant: dramatically faster page loads through static generation, better security, and full creative freedom on the frontend.</p><h2>The Tech Stack</h2><ul><li><strong>WordPress</strong> — Content management</li><li><strong>WPGraphQL</strong> — GraphQL API</li><li><strong>Next.js</strong> — React frontend with SSR/SSG</li><li><strong>Vercel</strong> — Hosting with global CDN</li></ul><p>At AN Digital Studio, this is exactly how we build client websites.</p>`,
+        category: "Development",
+        tags: [],
+      },
+      "seo-trends-ai-search": {
+        title: "SEO in the Age of AI: What You Need to Know",
+        excerpt: "AI-powered search engines are changing the game. Here's how to optimize for both traditional and AI search.",
+        content: `<p>AI-powered search engines are fundamentally changing how users find information online.</p><h2>How AI Changes Search</h2><p>Traditional SEO focused on keyword matching and backlinks. AI search engines understand context, intent, and nuance.</p><h2>Key Strategies</h2><ul><li><strong>Structured data</strong> — Use JSON-LD schema markup</li><li><strong>Semantic HTML</strong> — Proper heading hierarchies</li><li><strong>E-E-A-T</strong> — Experience, Expertise, Authoritativeness, Trustworthiness</li><li><strong>Page speed</strong> — Core Web Vitals remain critical</li></ul><p>At AN Digital Studio, we build every website with both traditional and AI SEO best practices.</p>`,
+        category: "SEO",
+        tags: [],
+      },
+    } as Record<string, { title: string; excerpt: string; content: string; category: string; tags: string[] }>,
   },
   notFound: {
     title: "404",

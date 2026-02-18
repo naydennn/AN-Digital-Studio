@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useTranslation } from "@/i18n/TranslationContext";
 import { SITE_NAME, SOCIAL_LINKS } from "@/lib/constants";
 
+
 const CURRENT_YEAR = new Date().getFullYear();
 
 function FacebookIcon() {
@@ -48,7 +49,7 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="border-t border-gold-border/8 bg-midnight">
+    <footer className="border-t border-gold-border/8 bg-midnight pb-[env(safe-area-inset-bottom)]">
       <div className="container mx-auto px-5 py-14 sm:px-6 lg:px-8">
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
           <div className="lg:col-span-2">
@@ -61,7 +62,7 @@ export default function Footer() {
               {Object.entries(SOCIAL_LINKS).map(([platform, url]) => {
                 const Icon = SOCIAL_ICON_MAP[platform];
                 return (
-                  <a key={platform} href={url} target="_blank" rel="noopener noreferrer" aria-label={platform} className="flex h-10 w-10 items-center justify-center rounded-full border border-gold-border/10 text-stone transition-all duration-300 hover:border-gold-border/25 hover:text-gold hover:bg-gold/5">
+                  <a key={platform} href={url} target="_blank" rel="noopener noreferrer" aria-label={platform === "facebook" ? dict.a11y.visitFacebook : platform === "instagram" ? dict.a11y.visitInstagram : dict.a11y.visitLinkedIn} className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full border border-gold-border/10 text-stone transition-all duration-300 hover:border-gold-border/25 hover:text-gold hover:bg-gold/5 focus:outline-none focus:ring-2 focus:ring-gold/30 focus:ring-offset-2 focus:ring-offset-midnight touch-manipulation">
                     {Icon && <Icon />}
                   </a>
                 );
@@ -73,7 +74,7 @@ export default function Footer() {
             <ul className="space-y-3">
               {NAV_ITEMS.map((link) => (
                 <li key={link.label}>
-                  <Link href={link.href} className="text-sm text-stone transition-colors hover:text-ivory">{link.label}</Link>
+                  <Link href={link.href} className="text-sm text-stone transition-colors hover:text-ivory focus:outline-none focus:ring-2 focus:ring-gold/30 focus:ring-offset-2 focus:ring-offset-midnight focus:text-ivory rounded">{link.label}</Link>
                 </li>
               ))}
             </ul>
@@ -81,8 +82,8 @@ export default function Footer() {
           <div>
             <h3 className="mb-5 text-[10px] font-bold uppercase tracking-[0.25em] text-gold">{dict.footer.contactTitle}</h3>
             <ul className="space-y-3 text-sm text-stone">
-              <li><a href="mailto:hello@andigital.bg" className="transition-colors hover:text-ivory">hello@andigital.bg</a></li>
-              <li>{dict.contact.locationValue}</li>
+              <li><a href="mailto:hello@andigital.bg" className="transition-colors hover:text-ivory focus:outline-none focus:ring-2 focus:ring-gold/30 focus:ring-offset-2 focus:ring-offset-midnight focus:text-ivory rounded">hello@andigital.bg</a></li>
+              <li><a href="tel:+359888806557" className="transition-colors hover:text-ivory focus:outline-none focus:ring-2 focus:ring-gold/30 focus:ring-offset-2 focus:ring-offset-midnight focus:text-ivory rounded">{dict.contact.phoneValue}</a></li>
             </ul>
           </div>
         </div>

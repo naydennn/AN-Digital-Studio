@@ -18,7 +18,7 @@ export default function Hero() {
   return (
     <section
       id="hero"
-      className="relative flex min-h-screen items-center overflow-hidden bg-midnight px-4 sm:px-6 lg:px-8"
+      className="relative flex min-h-[100dvh] min-h-screen items-center overflow-hidden bg-midnight px-5 sm:px-6 lg:px-8"
     >
       <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
         <div className="absolute top-[-20%] right-[-10%] h-[700px] w-[700px] rounded-full bg-gold/[0.04] blur-[120px]" />
@@ -41,8 +41,8 @@ export default function Hero() {
             <span className="text-xs font-medium tracking-wide text-stone">{dict.hero.badge}</span>
           </motion.div>
 
-          <TextReveal>
-            <h1 className="mb-8 font-display text-[2.5rem] font-extrabold leading-[1.05] tracking-tight sm:text-6xl md:text-7xl lg:text-8xl">
+          <TextReveal key={locale}>
+            <h1 className="mb-8 font-display text-[2.25rem] font-extrabold leading-[1.1] tracking-tight sm:text-6xl md:text-7xl lg:text-8xl">
               <span className="text-ivory">{dict.hero.line1}</span><br />
               <span className="gradient-text">{dict.hero.line2}</span><br />
               <span className="text-ivory">{dict.hero.line3}</span>

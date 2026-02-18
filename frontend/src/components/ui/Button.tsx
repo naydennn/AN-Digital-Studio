@@ -21,10 +21,12 @@ const VARIANT_STYLES = {
     "border border-gold-border/10 text-stone hover:border-gold-border/25 hover:text-ivory",
 } as const;
 
+const MIN_TOUCH_HEIGHT = "min-h-[44px]";
+
 const SIZE_STYLES = {
-  sm: "px-5 py-2 text-xs",
-  md: "px-7 py-2.5 text-sm",
-  lg: "px-9 py-3.5 text-sm",
+  sm: `px-5 py-2.5 text-xs ${MIN_TOUCH_HEIGHT}`,
+  md: `px-7 py-3 text-sm ${MIN_TOUCH_HEIGHT}`,
+  lg: `px-9 py-4 text-sm ${MIN_TOUCH_HEIGHT}`,
 } as const;
 
 export default function Button({

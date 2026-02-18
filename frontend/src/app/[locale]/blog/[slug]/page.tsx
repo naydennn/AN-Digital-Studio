@@ -6,7 +6,7 @@ import { getDictionary } from "@/i18n/get-dictionary";
 import { isValidLocale } from "@/i18n/config";
 import type { Locale } from "@/i18n/config";
 import { SITE_NAME, SITE_URL } from "@/lib/constants";
-import { BlogPostJsonLd } from "@/components/seo/JsonLd";
+import { BlogPostJsonLd, BreadcrumbJsonLd } from "@/components/seo/JsonLd";
 
 interface Props {
   params: Promise<{ locale: string; slug: string }>;
@@ -38,43 +38,19 @@ function fmtDate(d: string, l: string) {
   });
 }
 
-const PLACEHOLDER_POSTS: Record<string, PostData> = {
-  "why-mobile-first-design-matters": {
-    title: "Why Mobile-First Design Matters in 2026",
-    content: `<p>With over 60% of web traffic now coming from mobile devices, designing for mobile first is no longer a nice-to-have — it's a fundamental requirement for any successful digital project.</p><h2>What is Mobile-First Design?</h2><p>Mobile-first design is a strategy where you design for the smallest screen first and then progressively enhance the experience for larger screens.</p><h2>Why It Matters</h2><p>Google uses mobile-first indexing, meaning it primarily uses the mobile version of your site for ranking and indexing. If your mobile experience is poor, your search rankings will suffer.</p><h2>Key Principles</h2><ul><li>Start with the smallest viewport and scale up</li><li>Prioritize content hierarchy</li><li>Use touch-friendly interactive elements</li><li>Optimize images and assets for mobile networks</li><li>Test on real devices, not just emulators</li></ul><p>At ${SITE_NAME}, every website we build starts with mobile.</p>`,
-    date: "2026-02-01",
-    author: "AN Digital Studio",
-    authorAvatar: null,
-    image: null,
-    imageAlt: "Mobile-first design",
-    categories: ["Design"],
-    tags: ["mobile", "responsive", "UX"],
-  },
-  "headless-wordpress-nextjs-guide": {
-    title: "The Complete Guide to Headless WordPress with Next.js",
-    content: `<p>Headless WordPress combines the familiar content management experience of WordPress with the blazing-fast performance of modern frontend frameworks like Next.js.</p><h2>What is Headless WordPress?</h2><p>In a traditional WordPress setup, the same application handles both content management and rendering. In a headless setup, WordPress serves purely as a content backend.</p><h2>Why Go Headless?</h2><p>The benefits are significant: dramatically faster page loads through static generation, better security, and full creative freedom on the frontend.</p><h2>The Tech Stack</h2><ul><li><strong>WordPress</strong> — Content management</li><li><strong>WPGraphQL</strong> — GraphQL API</li><li><strong>Next.js</strong> — React frontend with SSR/SSG</li><li><strong>Vercel</strong> — Hosting with global CDN</li></ul><p>At ${SITE_NAME}, this is exactly how we build client websites.</p>`,
-    date: "2026-01-25",
-    author: "AN Digital Studio",
-    authorAvatar: null,
-    image: null,
-    imageAlt: "Headless WordPress",
-    categories: ["Development"],
-    tags: ["wordpress", "nextjs", "headless"],
-  },
-  "seo-trends-ai-search": {
-    title: "SEO in the Age of AI: What You Need to Know",
-    content: `<p>AI-powered search engines are fundamentally changing how users find information online.</p><h2>How AI Changes Search</h2><p>Traditional SEO focused on keyword matching and backlinks. AI search engines understand context, intent, and nuance.</p><h2>Key Strategies</h2><ul><li><strong>Structured data</strong> — Use JSON-LD schema markup</li><li><strong>Semantic HTML</strong> — Proper heading hierarchies</li><li><strong>E-E-A-T</strong> — Experience, Expertise, Authoritativeness, Trustworthiness</li><li><strong>Page speed</strong> — Core Web Vitals remain critical</li></ul><p>At ${SITE_NAME}, we build every website with both traditional and AI SEO best practices.</p>`,
-    date: "2026-01-18",
-    author: "AN Digital Studio",
-    authorAvatar: null,
-    image: null,
-    imageAlt: "SEO and AI",
-    categories: ["SEO"],
-    tags: ["seo", "ai", "marketing"],
-  },
+const PLACEHOLDER_SLUGS = ["why-mobile-first-design-matters", "headless-wordpress-nextjs-guide", "seo-trends-ai-search"] as const;
+const PLACEHOLDER_DATES: Record<string, string> = {
+  "why-mobile-first-design-matters": "2026-02-01",
+  "headless-wordpress-nextjs-guide": "2026-01-25",
+  "seo-trends-ai-search": "2026-01-18",
+};
+const PLACEHOLDER_IMAGE_ALTS: Record<string, string> = {
+  "why-mobile-first-design-matters": "Mobile-first design",
+  "headless-wordpress-nextjs-guide": "Headless WordPress",
+  "seo-trends-ai-search": "SEO and AI",
 };
 
-async function getPost(slug: string): Promise<PostData | null> {
+async function getPost(slug: string, locale: Locale): Promise<PostData | null> {
   try {
     if (process.env.WORDPRESS_GRAPHQL_URL) {
       const { getPostBySlug } = await import("@/lib/wordpress");
@@ -95,12 +71,29 @@ async function getPost(slug: string): Promise<PostData | null> {
   } catch {
     /* fallback */
   }
-  return PLACEHOLDER_POSTS[slug] || null;
+  if (!PLACEHOLDER_SLUGS.includes(slug as (typeof PLACEHOLDER_SLUGS)[number])) return null;
+  const { getDictionary } = await import("@/i18n/get-dictionary");
+  const dict = await getDictionary(locale);
+  const post = dict.blog.posts[slug];
+  if (!post) return null;
+  const categoryLabels = dict.blog.categoryLabels;
+  return {
+    title: post.title,
+    content: post.content,
+    date: PLACEHOLDER_DATES[slug],
+    author: "AN Digital Studio",
+    authorAvatar: null,
+    image: null,
+    imageAlt: PLACEHOLDER_IMAGE_ALTS[slug],
+    categories: [categoryLabels[post.category] ?? post.category],
+    tags: post.tags,
+  };
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params;
-  const post = await getPost(slug);
+  const safeLocale: Locale = isValidLocale(locale) ? locale : "en";
+  const post = await getPost(slug, safeLocale);
   if (!post) return { title: "Post Not Found" };
   const description = post.content
     .replace(/<[^>]*>/g, "")
@@ -124,17 +117,28 @@ export default async function BlogPostPage({ params }: Props) {
   const { locale, slug } = await params;
   const safeLocale: Locale = isValidLocale(locale) ? locale : "en";
   const dict = await getDictionary(safeLocale);
-  const post = await getPost(slug);
+  const post = await getPost(slug, safeLocale);
   if (!post) notFound();
+
+  const postUrl = `${SITE_URL}/${safeLocale}/blog/${slug}`;
 
   return (
     <article className="min-h-screen bg-midnight pt-32 pb-24">
+      <BreadcrumbJsonLd
+        locale={safeLocale}
+        items={[
+          { name: dict.nav.home, url: `${SITE_URL}/${safeLocale}` },
+          { name: dict.nav.blog, url: `${SITE_URL}/${safeLocale}/blog` },
+          { name: post.title, url: postUrl },
+        ]}
+      />
       <BlogPostJsonLd
         title={post.title}
         description={post.content.replace(/<[^>]*>/g, "").substring(0, 160)}
         datePublished={post.date}
         author={post.author}
-        url={`${SITE_URL}/${safeLocale}/blog/${slug}`}
+        url={postUrl}
+        locale={safeLocale}
         image={post.image || undefined}
       />
       <div className="container mx-auto max-w-3xl px-5 sm:px-6 lg:px-8">

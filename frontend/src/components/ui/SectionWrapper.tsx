@@ -18,7 +18,7 @@ export default function SectionWrapper({
       <div className="section-divider" />
       <section
         id={id}
-        className={`relative overflow-hidden px-4 py-24 sm:px-6 sm:py-32 lg:px-8 lg:py-40 ${
+        className={`relative overflow-hidden px-5 py-24 sm:px-6 sm:py-32 lg:px-8 lg:py-40 ${
           elevated ? "bg-charcoal" : "bg-midnight"
         } ${className}`}
       >
