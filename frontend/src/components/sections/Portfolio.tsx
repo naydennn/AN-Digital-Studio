@@ -61,12 +61,11 @@ export default function Portfolio() {
                     {item.image ? (
                       item.image.startsWith("http") ? (
                         <div className="absolute inset-0 flex items-center justify-center p-6">
-                          <Image
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
                             src={item.image}
                             alt={item.title}
-                            fill
                             className={`object-contain transition-transform duration-500 group-hover:scale-105 ${"imageSize" in item && item.imageSize === "small" ? "max-h-[55%] max-w-[55%]" : "max-h-full max-w-full"}`}
-                            sizes="(max-width:640px)100vw,(max-width:1024px)50vw,33vw"
                           />
                         </div>
                       ) : (
