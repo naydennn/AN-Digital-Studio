@@ -29,19 +29,21 @@ async function getLatestPosts(locale: Locale, dict: Dictionary): Promise<PostPre
     }
   } catch { /* fallback */ }
   const categoryLabels = dict.blog.categoryLabels;
-  return PLACEHOLDER_SLUGS.map((slug) => {
+  const result: PostPreview[] = [];
+  for (const slug of PLACEHOLDER_SLUGS) {
     const post = dict.blog.posts[slug];
-    if (!post) return null;
-    return {
+    if (!post) continue;
+    result.push({
       slug,
       title: post.title,
       excerpt: post.excerpt,
       date: PLACEHOLDER_DATES[slug],
-      image: null as string | null,
+      image: null,
       category: categoryLabels[post.category] ?? post.category,
       categoryKey: post.category,
-    };
-  }).filter((p): p is PostPreview => p !== null);
+    });
+  }
+  return result;
 }
 
 export default async function LatestPosts({ locale, dict }: { locale: Locale; dict: Dictionary }) {
