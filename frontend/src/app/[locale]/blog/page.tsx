@@ -19,20 +19,22 @@ const PLACEHOLDER_DATES: Record<string, string> = {
 
 function getPlaceholderPosts(dict: { blog: { posts: Record<string, { title: string; excerpt: string; category: string }>; categoryLabels: Record<string, string> } }): BlogPost[] {
   const categoryLabels = dict.blog.categoryLabels;
-  return PLACEHOLDER_SLUGS.map((slug) => {
+  const result: BlogPost[] = [];
+  for (const slug of PLACEHOLDER_SLUGS) {
     const post = dict.blog.posts[slug];
-    if (!post) return null;
-    return {
+    if (!post) continue;
+    result.push({
       slug,
       title: post.title,
       excerpt: post.excerpt,
       date: PLACEHOLDER_DATES[slug],
-      image: null as string | null,
+      image: null,
       author: "AN Digital Studio",
       category: categoryLabels[post.category] ?? post.category,
       categoryKey: post.category,
-    };
-  }).filter((p): p is BlogPost => p !== null);
+    });
+  }
+  return result;
 }
 
 function formatDate(d: string, locale: string) { return new Date(d).toLocaleDateString(locale === "bg" ? "bg-BG" : "en-US", { year: "numeric", month: "long", day: "numeric" }); }
