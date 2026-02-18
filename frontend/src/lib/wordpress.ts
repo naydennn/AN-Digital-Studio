@@ -24,7 +24,7 @@ async function fetchGraphQL<T>(
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ query, variables }),
-    next: { revalidate: 60 },
+    next: { revalidate: 3600 },
   });
 
   if (!response.ok) {

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
+
+export const revalidate = 3600;
 import { BreadcrumbJsonLd } from "@/components/seo/JsonLd";
 import BlogPostPlaceholder from "@/components/ui/BlogPostPlaceholder";
 import { getDictionary } from "@/i18n/get-dictionary";

@@ -8,6 +8,18 @@ import type { Locale } from "@/i18n/config";
 import { SITE_NAME, SITE_URL } from "@/lib/constants";
 import { BlogPostJsonLd, BreadcrumbJsonLd } from "@/components/seo/JsonLd";
 
+export const revalidate = 3600;
+export const dynamicParams = true;
+
+const LOCALES = ["en", "bg"] as const;
+const STATIC_SLUGS = ["why-mobile-first-design-matters", "headless-wordpress-nextjs-guide", "seo-trends-ai-search"] as const;
+
+export function generateStaticParams() {
+  return LOCALES.flatMap((locale) =>
+    STATIC_SLUGS.map((slug) => ({ locale, slug }))
+  );
+}
+
 interface Props {
   params: Promise<{ locale: string; slug: string }>;
 }
