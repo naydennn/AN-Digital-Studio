@@ -102,6 +102,13 @@ export interface Dictionary {
     categoryLabels: Record<string, string>;
     posts: Record<string, { title: string; excerpt: string; content: string; category: string; tags: string[] }>;
   };
+  faq: {
+    label: string;
+    heading: string;
+    headingAccent: string;
+    sub: string;
+    items: { question: string; answer: string }[];
+  };
   notFound: {
     title: string;
     heading: string;

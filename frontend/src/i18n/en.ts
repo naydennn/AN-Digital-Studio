@@ -195,6 +195,42 @@ const en: Dictionary = {
       },
     } as Record<string, { title: string; excerpt: string; content: string; category: string; tags: string[] }>,
   },
+  faq: {
+    label: "FAQ",
+    heading: "Common ",
+    headingAccent: "Questions",
+    sub: "Everything you need to know before starting your project with us.",
+    items: [
+      {
+        question: "How long does it take to build a website?",
+        answer: "It depends on the scope. A landing page or simple site is typically ready in 1–2 weeks. A full business website takes 2–4 weeks, and a custom e-commerce store can take 4–8 weeks. We always agree on a clear timeline before we start.",
+      },
+      {
+        question: "How much does a website cost?",
+        answer: "Every project is different, so every quote is tailored to your specific requirements. We offer transparent, fixed pricing — no surprises. Contact us for a free, no-obligation quote and we'll outline exactly what's included.",
+      },
+      {
+        question: "Do you work with clients outside Bulgaria?",
+        answer: "Absolutely. We work with clients across Europe and beyond. Everything happens online — discovery calls, design reviews, feedback, and delivery — so location is never a barrier.",
+      },
+      {
+        question: "What do I need to provide to get started?",
+        answer: "Just your ideas, goals, and any brand assets you already have (logo, colors, photos). If you don't have them yet, we can help you create them. We guide you through every step so nothing gets missed.",
+      },
+      {
+        question: "Will my website work on mobile and all devices?",
+        answer: "Yes, without exception. Every website we build is mobile-first and fully responsive across all screen sizes — phones, tablets, laptops, and desktops.",
+      },
+      {
+        question: "Can I update the website myself after launch?",
+        answer: "Yes. We can integrate a content management system (CMS) so you can edit text, images, and pages without any technical knowledge. If you prefer, we can handle updates for you as part of a support package.",
+      },
+      {
+        question: "Do you offer support and maintenance after launch?",
+        answer: "Yes. We offer ongoing maintenance and support packages that cover security updates, performance monitoring, content changes, and technical assistance — so your website stays fast, secure, and up to date.",
+      },
+    ],
+  },
   notFound: {
     title: "404",
     heading: "Page Not Found",
