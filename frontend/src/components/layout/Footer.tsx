@@ -82,7 +82,7 @@ export default function Footer() {
           <div>
             <h3 className="mb-5 text-[10px] font-bold uppercase tracking-[0.25em] text-gold">{dict.footer.contactTitle}</h3>
             <ul className="space-y-3 text-sm text-stone">
-              <li><a href="mailto:hello@andigital.bg" className="transition-colors hover:text-ivory focus:outline-none focus:ring-2 focus:ring-gold/30 focus:ring-offset-2 focus:ring-offset-midnight focus:text-ivory rounded">hello@andigital.bg</a></li>
+              <li><a href="mailto:contact@andigital.bg" className="transition-colors hover:text-ivory focus:outline-none focus:ring-2 focus:ring-gold/30 focus:ring-offset-2 focus:ring-offset-midnight focus:text-ivory rounded">contact@andigital.bg</a></li>
               <li><a href="tel:+359888806557" className="transition-colors hover:text-ivory focus:outline-none focus:ring-2 focus:ring-gold/30 focus:ring-offset-2 focus:ring-offset-midnight focus:text-ivory rounded">{dict.contact.phoneValue}</a></li>
             </ul>
           </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { useGoogleReCaptcha } from "@google-recaptcha/react";
 import ScrollReveal from "@/components/effects/ScrollReveal";
 import SectionWrapper from "@/components/ui/SectionWrapper";
 import Button from "@/components/ui/Button";
@@ -31,17 +32,22 @@ export default function Contact() {
   const [form, setForm] = useState<FormData>(INITIAL);
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const upd = (k: keyof FormData) => (v: string) => setForm(p => ({ ...p, [k]: v }));
+  const googleReCaptcha = useGoogleReCaptcha();
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setStatus("sending");
     try {
+      const recaptchaToken = googleReCaptcha.executeV3
+        ? await googleReCaptcha.executeV3("contact_submit")
+        : undefined;
+
       const url = process.env.NEXT_PUBLIC_WORDPRESS_API_URL;
       if (url) {
         const res = await fetch(`${url}/wp-json/contact/v1/submit`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(form),
+          body: JSON.stringify({ ...form, recaptchaToken }),
         });
         if (!res.ok) throw new Error("Request failed");
       } else {
@@ -50,7 +56,7 @@ export default function Contact() {
         const body = encodeURIComponent(
           `Name: ${form.name}\nEmail: ${form.email}\n\n${form.message}`
         );
-        window.open(`mailto:hello@andigital.bg?subject=${subject}&body=${body}`);
+        window.open(`mailto:contact@andigital.bg?subject=${subject}&body=${body}`);
       }
       setStatus("sent");
       setForm(INITIAL);
@@ -77,7 +83,7 @@ export default function Contact() {
             <div className="space-y-5">
               <div className="flex items-center gap-5">
                 <div className="icon-container icon-container-lg shrink-0"><svg className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" /></svg></div>
-                <div><p className="text-xs text-stone">{t.emailLabel}</p><a href="mailto:hello@andigital.bg" className="text-base font-medium text-ivory transition-colors hover:text-gold">hello@andigital.bg</a></div>
+                <div><p className="text-xs text-stone">{t.emailLabel}</p><a href="mailto:contact@andigital.bg" className="text-base font-medium text-ivory transition-colors hover:text-gold">contact@andigital.bg</a></div>
               </div>
               <div className="flex items-center gap-5">
                 <div className="icon-container icon-container-lg shrink-0"><svg className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 010 2.14 9.9 9.9 0 004.7 4.7 2 2 0 012.14 0 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" /></svg></div>

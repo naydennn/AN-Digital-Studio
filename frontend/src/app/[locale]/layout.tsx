@@ -13,6 +13,7 @@ import { getDictionary } from "@/i18n/get-dictionary";
 import { isValidLocale, LOCALES } from "@/i18n/config";
 import type { Locale } from "@/i18n/config";
 import { SITE_NAME, SITE_DESCRIPTION, SITE_URL } from "@/lib/constants";
+import RecaptchaProvider from "@/components/providers/RecaptchaProvider";
 
 const inter = Inter({
   subsets: ["latin", "cyrillic"],
@@ -125,21 +126,23 @@ export default async function LocaleLayout({
     >
       <body className="font-body antialiased">
         <TranslationProvider dict={dict} locale={locale as Locale}>
-          <OrganizationJsonLd locale={locale as Locale} />
-          <WebSiteJsonLd
-            locale={locale as Locale}
-            description={locale === "bg" ? dict.footer.description : dict.hero.sub}
-          />
-          <ServicesJsonLd services={dict.services.items} />
-          <a
-            href="#main-content"
-            className="skip-link focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2 focus:ring-offset-midnight"
-          >
-            {skipLabel}
-          </a>
-          <Header />
-          <main id="main-content">{children}</main>
-          <Footer />
+          <RecaptchaProvider>
+            <OrganizationJsonLd locale={locale as Locale} />
+            <WebSiteJsonLd
+              locale={locale as Locale}
+              description={locale === "bg" ? dict.footer.description : dict.hero.sub}
+            />
+            <ServicesJsonLd services={dict.services.items} />
+            <a
+              href="#main-content"
+              className="skip-link focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2 focus:ring-offset-midnight"
+            >
+              {skipLabel}
+            </a>
+            <Header />
+            <main id="main-content">{children}</main>
+            <Footer />
+          </RecaptchaProvider>
         </TranslationProvider>
       </body>
     </html>

@@ -262,7 +262,7 @@ export default function Header() {
                 </div>
 
                 <div className="border-t border-gold-border/10 px-10 py-6">
-                  <p className="text-xs text-ash">hello@andigital.bg</p>
+                  <p className="text-xs text-ash">contact@andigital.bg</p>
                 </div>
               </motion.div>
             </>

@@ -30,7 +30,7 @@ export function OrganizationJsonLd({ locale }: { locale: Locale }) {
     areaServed: { "@type": "Country", name: "Bulgaria" },
     contactPoint: {
       "@type": "ContactPoint",
-      email: "hello@andigital.bg",
+      email: "contact@andigital.bg",
       contactType: "customer service",
       areaServed: "BG",
       availableLanguage: ["English", "Bulgarian"],
