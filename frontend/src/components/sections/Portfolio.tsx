@@ -65,6 +65,7 @@ export default function Portfolio() {
                           src={item.image}
                           alt={item.title}
                           fill
+                          unoptimized
                           loading="lazy"
                           sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 33vw"
                           className={`object-contain transition-transform duration-500 group-hover:scale-105 ${isSmall ? "!p-8" : ""}`}

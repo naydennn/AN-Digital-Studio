@@ -75,7 +75,7 @@ export default async function BlogPage({ params }: { params: Promise<{ locale: s
         </div>
         <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
           {posts.map(post => (
-            <Link key={post.slug} href={`/${safeLocale}/blog/${post.slug}`} className="group overflow-hidden rounded-2xl border border-gold-border/8 bg-charcoal transition-all duration-400 hover:border-gold-border/20 hover:shadow-2xl hover:shadow-gold/[0.05] focus:outline-none focus:ring-2 focus:ring-gold/30 focus:ring-offset-2 focus:ring-offset-midnight">
+            <Link key={post.slug} href={`/${safeLocale}/blog/${post.slug}`} prefetch={false} className="group overflow-hidden rounded-2xl border border-gold-border/8 bg-charcoal transition-all duration-400 hover:border-gold-border/20 hover:shadow-2xl hover:shadow-gold/[0.05] focus:outline-none focus:ring-2 focus:ring-gold/30 focus:ring-offset-2 focus:ring-offset-midnight">
               <div className="relative aspect-[16/10] overflow-hidden bg-midnight">
                 {post.image ? <Image src={post.image} alt={post.title} fill className="object-cover transition-transform duration-500 group-hover:scale-105" sizes="(max-width:640px)100vw,(max-width:1024px)50vw,33vw" /> : <BlogPostPlaceholder category={post.categoryKey ?? post.category} />}
               </div>
