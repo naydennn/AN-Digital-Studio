@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
-import { useGoogleReCaptcha } from "@google-recaptcha/react";
+import { useState, useCallback, type FormEvent } from "react";
+import { GoogleReCaptchaCheckbox } from "@google-recaptcha/react";
 import ScrollReveal from "@/components/effects/ScrollReveal";
 import SectionWrapper from "@/components/ui/SectionWrapper";
 import Button from "@/components/ui/Button";
@@ -31,17 +31,19 @@ export default function Contact() {
   const t = dict.contact;
   const [form, setForm] = useState<FormData>(INITIAL);
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
   const upd = (k: keyof FormData) => (v: string) => setForm(p => ({ ...p, [k]: v }));
-  const googleReCaptcha = useGoogleReCaptcha();
+  const onRecaptchaVerify = useCallback((token: string) => setRecaptchaToken(token), []);
+  const onRecaptchaExpired = useCallback(() => setRecaptchaToken(null), []);
+
+  const recaptchaEnabled = !!process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
+  const canSubmit = status !== "sending" && (!recaptchaEnabled || !!recaptchaToken);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    if (!canSubmit) return;
     setStatus("sending");
     try {
-      const recaptchaToken = googleReCaptcha.executeV3
-        ? await googleReCaptcha.executeV3("contact_submit")
-        : undefined;
-
       const url = process.env.NEXT_PUBLIC_WORDPRESS_API_URL;
       if (url) {
         const res = await fetch(`${url}/wp-json/contact/v1/submit`, {
@@ -60,6 +62,7 @@ export default function Contact() {
       }
       setStatus("sent");
       setForm(INITIAL);
+      setRecaptchaToken(null);
       setTimeout(() => setStatus("idle"), 5000);
     } catch {
       setStatus("error");
@@ -100,7 +103,16 @@ export default function Contact() {
             </div>
             <FloatingInput id="subject" label={t.formSubject} value={form.subject} onChange={upd("subject")} />
             <FloatingInput id="message" label={t.formMessage} value={form.message} onChange={upd("message")} textarea />
-            <Button type="submit" size="lg" className="w-full" disabled={status === "sending"}>{btnLabel}</Button>
+            {recaptchaEnabled && (
+              <div className="flex justify-center">
+                <GoogleReCaptchaCheckbox
+                  theme="dark"
+                  onChange={onRecaptchaVerify}
+                  onExpired={onRecaptchaExpired}
+                />
+              </div>
+            )}
+            <Button type="submit" size="lg" className="w-full" disabled={!canSubmit}>{btnLabel}</Button>
             {status === "sent" && <p className="text-center text-sm text-gold" role="status">{t.formThankYou}</p>}
             {status === "error" && <p className="text-center text-sm text-red-400" role="alert">{t.formError}</p>}
           </form>
