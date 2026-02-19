@@ -30,6 +30,7 @@
   html {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
   }
 
   .skip-link {
@@ -52,7 +53,6 @@
     background-color: var(--color-midnight);
     color: var(--color-ivory);
     font-family: var(--font-body);
-    overflow-x: hidden;
   }
 
   ::selection {
@@ -137,8 +137,8 @@
   /* Navigation glass */
   .glass-nav {
     background: rgba(8, 8, 10, 0.82);
-    backdrop-filter: blur(24px) saturate(1.5);
-    -webkit-backdrop-filter: blur(24px) saturate(1.5);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
     border-bottom: 1px solid rgba(201, 169, 110, 0.06);
   }
 

@@ -39,7 +39,6 @@ export default function Card({
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       className={`glass glow-hover rounded-2xl p-6 transition-all duration-300 ease-out ${className}`}
-      style={{ transformStyle: "preserve-3d" }}
     >
       {children}
     </div>

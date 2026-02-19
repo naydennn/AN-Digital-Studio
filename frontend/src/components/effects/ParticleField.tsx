@@ -3,34 +3,41 @@
 import { useEffect, useRef, useCallback } from "react";
 import { ANIMATION } from "@/lib/constants";
 
+const CONNECTION_DISTANCE = 90;
+const CONNECTION_DISTANCE_SQ = CONNECTION_DISTANCE * CONNECTION_DISTANCE;
+
 interface Particle {
   x: number;
   y: number;
   size: number;
   speedX: number;
   speedY: number;
-  opacity: number;
+  fillStyle: string;
 }
 
 export default function ParticleField() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const particlesRef = useRef<Particle[]>([]);
   const animationRef = useRef<number>(0);
+  const isMobileRef = useRef(false);
 
   const initParticles = useCallback((width: number, height: number) => {
-    const isMobile = width < 768;
-    const count = isMobile
+    isMobileRef.current = width < 768;
+    const count = isMobileRef.current
       ? ANIMATION.particleCountMobile
       : ANIMATION.particleCountDesktop;
 
-    particlesRef.current = Array.from({ length: count }, () => ({
-      x: Math.random() * width,
-      y: Math.random() * height,
-      size: Math.random() * 1.5 + 0.3,
-      speedX: (Math.random() - 0.5) * 0.3,
-      speedY: (Math.random() - 0.5) * 0.2,
-      opacity: Math.random() * 0.3 + 0.05,
-    }));
+    particlesRef.current = Array.from({ length: count }, () => {
+      const opacity = Math.random() * 0.3 + 0.05;
+      return {
+        x: Math.random() * width,
+        y: Math.random() * height,
+        size: Math.random() * 1.5 + 0.3,
+        speedX: (Math.random() - 0.5) * 0.3,
+        speedY: (Math.random() - 0.5) * 0.2,
+        fillStyle: `rgba(201,169,110,${opacity.toFixed(3)})`,
+      };
+    });
   }, []);
 
   useEffect(() => {
@@ -55,44 +62,52 @@ export default function ParticleField() {
 
     resizeCanvas();
 
-    const CONNECTION_DISTANCE = 90;
+    let paused = false;
+
+    const handleVisibility = () => {
+      paused = document.hidden;
+      if (!paused) animationRef.current = requestAnimationFrame(animate);
+    };
 
     const animate = () => {
-      if (!ctx || !canvas) return;
+      if (paused || !ctx || !canvas) return;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       const particles = particlesRef.current;
+      const w = canvas.width;
+      const h = canvas.height;
 
-      particles.forEach((p) => {
+      for (const p of particles) {
         p.x += p.speedX;
         p.y += p.speedY;
-
-        if (p.x < 0) p.x = canvas.width;
-        if (p.x > canvas.width) p.x = 0;
-        if (p.y < 0) p.y = canvas.height;
-        if (p.y > canvas.height) p.y = 0;
+        if (p.x < 0) p.x = w;
+        else if (p.x > w) p.x = 0;
+        if (p.y < 0) p.y = h;
+        else if (p.y > h) p.y = 0;
 
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(201, 169, 110, ${p.opacity})`;
+        ctx.fillStyle = p.fillStyle;
         ctx.fill();
-      });
+      }
 
-      for (let i = 0; i < particles.length; i++) {
-        for (let j = i + 1; j < particles.length; j++) {
-          const dx = particles[i].x - particles[j].x;
-          const dy = particles[i].y - particles[j].y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-
-          if (dist < CONNECTION_DISTANCE) {
-            const opacity =
-              ((CONNECTION_DISTANCE - dist) / CONNECTION_DISTANCE) * 0.05;
-            ctx.beginPath();
-            ctx.moveTo(particles[i].x, particles[i].y);
-            ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = `rgba(201, 169, 110, ${opacity})`;
-            ctx.lineWidth = 0.4;
-            ctx.stroke();
+      if (!isMobileRef.current) {
+        ctx.lineWidth = 0.4;
+        for (let i = 0; i < particles.length; i++) {
+          for (let j = i + 1; j < particles.length; j++) {
+            const dx = particles[i].x - particles[j].x;
+            const dy = particles[i].y - particles[j].y;
+            const distSq = dx * dx + dy * dy;
+            if (distSq < CONNECTION_DISTANCE_SQ) {
+              const opacity =
+                ((CONNECTION_DISTANCE_SQ - distSq) / CONNECTION_DISTANCE_SQ) *
+                0.05;
+              ctx.beginPath();
+              ctx.moveTo(particles[i].x, particles[i].y);
+              ctx.lineTo(particles[j].x, particles[j].y);
+              ctx.strokeStyle = `rgba(201,169,110,${opacity.toFixed(3)})`;
+              ctx.stroke();
+            }
           }
         }
       }
@@ -101,11 +116,15 @@ export default function ParticleField() {
     };
 
     animationRef.current = requestAnimationFrame(animate);
-    window.addEventListener("resize", resizeCanvas, { passive: true });
+
+    const resizeObserver = new ResizeObserver(resizeCanvas);
+    if (canvas.parentElement) resizeObserver.observe(canvas.parentElement);
+    document.addEventListener("visibilitychange", handleVisibility);
 
     return () => {
       cancelAnimationFrame(animationRef.current);
-      window.removeEventListener("resize", resizeCanvas);
+      resizeObserver.disconnect();
+      document.removeEventListener("visibilitychange", handleVisibility);
     };
   }, [initParticles]);
 
@@ -113,6 +132,7 @@ export default function ParticleField() {
     <canvas
       ref={canvasRef}
       className="pointer-events-none absolute inset-0"
+      style={{ willChange: "transform" }}
       aria-hidden="true"
     />
   );

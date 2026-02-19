@@ -88,9 +88,27 @@ export default function Header() {
   }, [pathname]);
 
   useEffect(() => {
-    document.body.style.overflow = isOpen ? "hidden" : "";
+    if (isOpen) {
+      const scrollY = window.scrollY;
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = "100%";
+      document.body.style.overflowY = "scroll";
+    } else {
+      const scrollY = Math.abs(parseInt(document.body.style.top || "0", 10));
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.width = "";
+      document.body.style.overflowY = "";
+      window.scrollTo(0, scrollY);
+    }
     return () => {
-      document.body.style.overflow = "";
+      const scrollY = Math.abs(parseInt(document.body.style.top || "0", 10));
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.width = "";
+      document.body.style.overflowY = "";
+      if (scrollY) window.scrollTo(0, scrollY);
     };
   }, [isOpen]);
 
@@ -200,7 +218,7 @@ export default function Header() {
                 initial="closed"
                 animate="open"
                 exit="exit"
-                className="fixed right-0 top-0 z-40 flex h-full w-[300px] flex-col border-l border-gold-border/10 bg-charcoal/95 backdrop-blur-2xl sm:w-[340px]"
+                className="fixed right-0 top-0 z-40 flex h-screen h-dvh w-[300px] flex-col border-l border-gold-border/10 bg-charcoal/95 backdrop-blur-2xl sm:w-[340px]"
               >
                 <div className="flex flex-1 flex-col justify-center px-10">
                   <nav className="space-y-1">

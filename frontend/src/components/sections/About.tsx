@@ -1,18 +1,32 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import ScrollReveal from "@/components/effects/ScrollReveal";
 import SectionWrapper from "@/components/ui/SectionWrapper";
 import { STATS } from "@/lib/constants";
 import { useTranslation } from "@/i18n/TranslationContext";
 
 const COUNTER_DURATION_MS = 2000;
-const COUNTER_FRAME_INTERVAL = 16;
 
 function AnimatedCounter({ target, suffix, label }: { target: number; suffix: string; label: string }) {
   const [count, setCount] = useState(0);
   const [hasAnimated, setHasAnimated] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const rafRef = useRef<number>(0);
+
+  const runCounter = useCallback(() => {
+    const start = performance.now();
+    const tick = (now: number) => {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / COUNTER_DURATION_MS, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setCount(Math.round(eased * target));
+      if (progress < 1) {
+        rafRef.current = requestAnimationFrame(tick);
+      }
+    };
+    rafRef.current = requestAnimationFrame(tick);
+  }, [target]);
 
   useEffect(() => {
     const element = ref.current;
@@ -21,21 +35,17 @@ function AnimatedCounter({ target, suffix, label }: { target: number; suffix: st
       ([entry]) => {
         if (entry.isIntersecting && !hasAnimated) {
           setHasAnimated(true);
-          let current = 0;
-          const steps = COUNTER_DURATION_MS / COUNTER_FRAME_INTERVAL;
-          const increment = target / steps;
-          const timer = setInterval(() => {
-            current += increment;
-            if (current >= target) { setCount(target); clearInterval(timer); }
-            else { setCount(Math.floor(current)); }
-          }, COUNTER_FRAME_INTERVAL);
+          runCounter();
         }
       },
-      { threshold: 0.5 }
+      { threshold: 0.3 }
     );
     observer.observe(element);
-    return () => observer.disconnect();
-  }, [target, hasAnimated]);
+    return () => {
+      observer.disconnect();
+      cancelAnimationFrame(rafRef.current);
+    };
+  }, [hasAnimated, runCounter]);
 
   return (
     <div ref={ref} className="glass glow-hover group rounded-2xl px-5 py-7 text-center transition-all duration-300">
