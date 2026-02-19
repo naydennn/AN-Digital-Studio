@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 
 const RECAPTCHA_VERIFY_URL = "https://www.google.com/recaptcha/api/siteverify";
-const SMTP_PORT_DEFAULT = 587;
 
 interface ContactPayload {
   name: string;
@@ -14,7 +13,7 @@ interface ContactPayload {
 
 async function verifyRecaptcha(token: string): Promise<boolean> {
   const secret = process.env.RECAPTCHA_SECRET_KEY;
-  if (!secret) return true; // skip verification when secret not configured
+  if (!secret) return true;
 
   const params = new URLSearchParams({ secret, response: token });
   const res = await fetch(RECAPTCHA_VERIFY_URL, {
@@ -23,18 +22,6 @@ async function verifyRecaptcha(token: string): Promise<boolean> {
   });
   const data = (await res.json()) as { success: boolean };
   return data.success === true;
-}
-
-function createTransporter() {
-  return nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: Number(process.env.SMTP_PORT ?? SMTP_PORT_DEFAULT),
-    secure: process.env.SMTP_SECURE === "true",
-    auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS,
-    },
-  });
 }
 
 export async function POST(req: NextRequest) {
@@ -49,7 +36,15 @@ export async function POST(req: NextRequest) {
   }
 
   if (recaptchaToken) {
-    const valid = await verifyRecaptcha(recaptchaToken);
+    let valid: boolean;
+    try {
+      valid = await verifyRecaptcha(recaptchaToken);
+    } catch {
+      return NextResponse.json(
+        { error: "Failed to send message. Please try again later." },
+        { status: 500 }
+      );
+    }
     if (!valid) {
       return NextResponse.json(
         { error: "reCAPTCHA verification failed." },
@@ -58,13 +53,13 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  try {
-    const transporter = createTransporter();
+  const resend = new Resend(process.env.RESEND_API_KEY);
 
-    await transporter.sendMail({
-      from: process.env.SMTP_FROM ?? `"AN Digital Studio" <${process.env.SMTP_USER}>`,
-      to: process.env.CONTACT_RECIPIENT,
-      replyTo: `"${name}" <${email}>`,
+  try {
+    await resend.emails.send({
+      from: process.env.RESEND_FROM ?? "AN Digital Studio <contact@andigital.bg>",
+      to: process.env.CONTACT_RECIPIENT ?? "contact@andigital.bg",
+      replyTo: `${name} <${email}>`,
       subject: `[Contact] ${subject}`,
       text: `Name: ${name}\nEmail: ${email}\n\n${message}`,
       html: `

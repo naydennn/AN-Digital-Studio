@@ -113,6 +113,7 @@ ehthumbs.db
 .vercel
 
 # ============================================================
-# Personal / Local Notes
+# Personal / Local Notes & Temp Files
 # ============================================================
 WORDPRESS-GUIDE.md
+temp-*
