@@ -42,7 +42,7 @@ function addSecurityHeaders(response: NextResponse): void {
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com",
       "img-src 'self' data: blob: https: http:",
-      "connect-src 'self' https://www.google-analytics.com https://*.andigital.bg https://www.google.com/recaptcha/",
+      "connect-src 'self' https://www.google-analytics.com https://region1.google-analytics.com https://analytics.google.com https://*.andigital.bg https://www.google.com/recaptcha/ https://www.gstatic.com/recaptcha/",
       "frame-src https://www.google.com/recaptcha/ https://recaptcha.google.com/recaptcha/",
       "frame-ancestors 'none'",
     ].join("; ")

@@ -109,7 +109,7 @@ export default function Contact({ recaptchaSiteKey }: ContactProps) {
             </div>
             <FloatingInput id="subject" label={t.formSubject} value={form.subject} onChange={upd("subject")} />
             <FloatingInput id="message" label={t.formMessage} value={form.message} onChange={upd("message")} textarea />
-            {recaptchaEnabled && (
+            {recaptchaEnabled && recaptchaReady && (
               <div className="flex justify-center">
                 <GoogleReCaptchaCheckbox
                   theme="dark"
