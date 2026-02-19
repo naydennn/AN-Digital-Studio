@@ -1,69 +1,118 @@
-# Environment variables (sensitive - use Vercel env vars for production)
+# ============================================================
+# SENSITIVE - Environment Variables
+# ============================================================
 .env
 .env.local
-.env.development.local
-.env.test.local
-.env.production.local
-.env*.local
+.env.*.local
+.env.production
+.env.staging
+.env.development
 
+# ============================================================
+# SENSITIVE - Credentials & Secret Files
+# ============================================================
+*.pem
+*.key
+*.p12
+*.pfx
+*.p8
+*.ppk
+*.secret
+id_rsa
+id_rsa.*
+id_ed25519
+id_ed25519.*
+id_dsa
+id_ecdsa
+serviceAccountKey.json
+*credentials*.json
+*secret*.json
+*secrets*.json
+google-services.json
+GoogleService-Info.plist
+.aws/credentials
+.aws/config
+firebase-adminsdk*.json
+
+# ============================================================
 # Dependencies
+# ============================================================
 node_modules/
 /.pnp
 .pnp.js
+.pnp.*
 
-# Testing
-/coverage
-
+# ============================================================
 # Next.js
+# ============================================================
 .next/
 out/
 
-# Production
+# ============================================================
+# Build Outputs
+# ============================================================
 build/
 dist/
+coverage/
+*.tsbuildinfo
 
-# Misc
-.DS_Store
-*.pem
+# ============================================================
+# Caches
+# ============================================================
+.turbo
+.eslintcache
+.cache/
+.npm
 
-# Debug & logs
+# ============================================================
+# Yarn
+# ============================================================
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+
+# ============================================================
+# Logs & Debug
+# ============================================================
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 *.log
+debug-*.log
 
-# IDEs & editors (not needed for Vercel deploy)
+# ============================================================
+# IDE & Editor Folders
+# ============================================================
 .vscode/
 .idea/
 .cursor/
 .agents/
 
-# OS
-Thumbs.db
-.DS_Store
-
-# Vercel (deployment cache, not needed in repo)
-.vercel
-
-# Build caches
-.turbo
-.eslintcache
-.cache/
-
-# yarn
-.yarn/cache
-.yarn/unplugged
-.yarn/build-state.yml
-.yarn/install-state.gz
-.pnp.*
-
-# Local guides & notes (personal, not for repo)
-WORDPRESS-GUIDE.md
-
-# Editor temp files
+# ============================================================
+# Editor Temp Files
+# ============================================================
 *.swp
 *.swo
 *~
 .project
 .classpath
+
+# ============================================================
+# OS Generated Files
+# ============================================================
+.DS_Store
+Thumbs.db
+desktop.ini
+ehthumbs.db
+
+# ============================================================
+# Deployment
+# ============================================================
+.vercel
+
+# ============================================================
+# Personal / Local Notes
+# ============================================================
+WORDPRESS-GUIDE.md
