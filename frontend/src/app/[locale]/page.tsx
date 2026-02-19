@@ -1,10 +1,12 @@
+import dynamic from "next/dynamic";
 import Hero from "@/components/sections/Hero";
 import About from "@/components/sections/About";
 import Services from "@/components/sections/Services";
-import Portfolio from "@/components/sections/Portfolio";
 import LatestPosts from "@/components/sections/LatestPosts";
 import FAQ from "@/components/sections/FAQ";
 import Contact from "@/components/sections/Contact";
+
+const Portfolio = dynamic(() => import("@/components/sections/Portfolio"));
 import { BreadcrumbJsonLd } from "@/components/seo/JsonLd";
 import { getDictionary } from "@/i18n/get-dictionary";
 import { isValidLocale } from "@/i18n/config";

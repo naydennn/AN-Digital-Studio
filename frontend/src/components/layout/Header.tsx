@@ -176,17 +176,17 @@ export default function Header() {
         >
           <div className="flex w-5 flex-col gap-[5px]">
             <span
-              className={`block h-[1.5px] w-full rounded-full bg-ivory transition-all duration-300 origin-center ${
+              className={`block h-[1.5px] w-full rounded-full bg-ivory transition-[transform,opacity] duration-300 origin-center ${
                 isOpen ? "translate-y-[6.5px] rotate-45" : ""
               }`}
             />
             <span
-              className={`block h-[1.5px] w-full rounded-full bg-ivory transition-all duration-300 ${
+              className={`block h-[1.5px] w-full rounded-full bg-ivory transition-[transform,opacity] duration-300 ${
                 isOpen ? "opacity-0 scale-x-0" : ""
               }`}
             />
             <span
-              className={`block h-[1.5px] w-full rounded-full bg-ivory transition-all duration-300 origin-center ${
+              className={`block h-[1.5px] w-full rounded-full bg-ivory transition-[transform,opacity] duration-300 origin-center ${
                 isOpen ? "-translate-y-[6.5px] -rotate-45" : ""
               }`}
             />
@@ -202,7 +202,7 @@ export default function Header() {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.25 }}
-                className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm"
+                className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm transform-gpu"
                 onClick={() => {
                   setIsOpen(false);
                   menuButtonRef.current?.focus();
@@ -218,7 +218,7 @@ export default function Header() {
                 initial="closed"
                 animate="open"
                 exit="exit"
-                className="fixed right-0 top-0 z-40 flex h-screen h-dvh w-[300px] flex-col border-l border-gold-border/10 bg-charcoal/95 backdrop-blur-2xl sm:w-[340px]"
+                className="fixed right-0 top-0 z-40 flex h-screen h-dvh w-[300px] flex-col border-l border-gold-border/10 bg-charcoal/95 backdrop-blur-2xl transform-gpu sm:w-[340px]"
               >
                 <div className="flex flex-1 flex-col justify-center px-10">
                   <nav className="space-y-1">

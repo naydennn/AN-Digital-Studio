@@ -1,13 +1,15 @@
 "use client";
 
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import Button from "@/components/ui/Button";
 import MagneticButton from "@/components/effects/MagneticButton";
-import Spotlight from "@/components/effects/MouseGradient";
-import ParticleField from "@/components/effects/ParticleField";
 import TextReveal from "@/components/effects/TextReveal";
 import { useTranslation } from "@/i18n/TranslationContext";
+
+const Spotlight = dynamic(() => import("@/components/effects/MouseGradient"), { ssr: false });
+const ParticleField = dynamic(() => import("@/components/effects/ParticleField"), { ssr: false });
 
 const RING_BASE =
   "absolute rounded-full border pointer-events-none opacity-[0.07]";
@@ -33,7 +35,7 @@ export default function Hero() {
 
       <div className="container relative z-10 mx-auto max-w-5xl pt-24">
         <div className="text-center">
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.6 }} className="mb-10 inline-flex items-center gap-2.5 rounded-full border border-gold/15 bg-charcoal/60 px-5 py-2 backdrop-blur-md">
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.6 }} className="mb-10 inline-flex items-center gap-2.5 rounded-full border border-gold/15 bg-charcoal/60 px-5 py-2 backdrop-blur-md transform-gpu">
             <span className="relative flex h-2 w-2">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-gold opacity-60" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-gold" />

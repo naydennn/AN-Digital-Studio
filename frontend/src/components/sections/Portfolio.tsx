@@ -37,7 +37,7 @@ export default function Portfolio() {
               type="button"
               onClick={() => setActiveIdx(i)}
               aria-pressed={activeIdx === i}
-              className={`min-h-[44px] min-w-[44px] rounded-full px-6 py-3 text-xs font-semibold tracking-wide transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-gold/30 focus:ring-offset-2 focus:ring-offset-charcoal touch-manipulation ${activeIdx === i ? "gradient-gold-bg text-midnight shadow-lg shadow-gold/15" : "border border-gold-border/10 text-stone hover:border-gold-border/25 hover:text-ivory"}`}
+              className={`min-h-[44px] min-w-[44px] rounded-full px-6 py-3 text-xs font-semibold tracking-wide transition-[background-color,border-color,color,box-shadow] duration-300 focus:outline-none focus:ring-2 focus:ring-gold/30 focus:ring-offset-2 focus:ring-offset-charcoal touch-manipulation ${activeIdx === i ? "gradient-gold-bg text-midnight shadow-lg shadow-gold/15" : "border border-gold-border/10 text-stone hover:border-gold-border/25 hover:text-ivory"}`}
             >
               {cat}
             </button>
@@ -55,7 +55,7 @@ export default function Portfolio() {
                   href={item.url}
                   target={item.url.startsWith("http") ? "_blank" : undefined}
                   rel={item.url.startsWith("http") ? "noopener noreferrer" : undefined}
-                  className="group relative block overflow-hidden rounded-2xl border border-gold-border/8 bg-graphite transition-all duration-400 hover:border-gold-border/20 hover:shadow-2xl hover:shadow-gold/[0.06] focus:outline-none focus:ring-2 focus:ring-gold/30 focus:ring-offset-2 focus:ring-offset-charcoal break-words"
+                  className="group relative block overflow-hidden rounded-2xl border border-gold-border/8 bg-graphite transition-[border-color,box-shadow] duration-400 hover:border-gold-border/20 hover:shadow-2xl hover:shadow-gold/[0.06] focus:outline-none focus:ring-2 focus:ring-gold/30 focus:ring-offset-2 focus:ring-offset-charcoal break-words"
                 >
                   <div className="relative aspect-[4/3] overflow-hidden bg-midnight">
                     <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(201,169,110,0.05),transparent_70%)]" />
@@ -74,7 +74,7 @@ export default function Portfolio() {
                     ) : (
                       <div className="flex h-full w-full items-center justify-center"><svg className="h-14 w-14 text-gold/10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={0.75} d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z" /></svg></div>
                     )}
-                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-midnight/85 backdrop-blur-md opacity-0 transition-all duration-400 group-hover:opacity-100">
+                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-midnight/85 backdrop-blur-md transform-gpu opacity-0 transition-opacity duration-400 group-hover:opacity-100">
                       <p className="max-w-[80%] text-center text-sm text-stone">{translated?.description ?? item.description}</p>
                     </div>
                   </div>

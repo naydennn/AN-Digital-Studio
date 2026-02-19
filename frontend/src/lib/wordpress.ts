@@ -68,7 +68,7 @@ export async function getPosts(
           excerpt
           featuredImage {
             node {
-              sourceUrl
+              sourceUrl(size: MEDIUM_LARGE)
               altText
               mediaDetails {
                 width

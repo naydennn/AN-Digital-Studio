@@ -70,7 +70,7 @@ export default async function LatestPosts({ locale, dict }: { locale: Locale; di
       <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
         {posts.map((post, i) => (
           <ScrollReveal key={post.slug} delay={i * 0.1}>
-            <Link href={`/${locale}/blog/${post.slug}`} prefetch={false} className="group flex h-full flex-col overflow-hidden rounded-2xl border border-gold-border/8 bg-charcoal transition-all duration-400 hover:border-gold-border/20 hover:shadow-2xl hover:shadow-gold/[0.05] focus:outline-none focus:ring-2 focus:ring-gold/30 focus:ring-offset-2 focus:ring-offset-charcoal">
+            <Link href={`/${locale}/blog/${post.slug}`} prefetch={false} className="group flex h-full flex-col overflow-hidden rounded-2xl border border-gold-border/8 bg-charcoal transition-[border-color,box-shadow] duration-400 hover:border-gold-border/20 hover:shadow-2xl hover:shadow-gold/[0.05] focus:outline-none focus:ring-2 focus:ring-gold/30 focus:ring-offset-2 focus:ring-offset-charcoal">
               <div className="relative aspect-[16/10] overflow-hidden bg-midnight">
                 {post.image ? <Image src={post.image} alt={post.title} fill className="object-cover transition-transform duration-500 group-hover:scale-105" sizes="(max-width:640px)100vw,(max-width:1024px)50vw,33vw" /> : (
                   <BlogPostPlaceholder category={post.categoryKey ?? post.category} />
