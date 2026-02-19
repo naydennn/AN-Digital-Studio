@@ -66,7 +66,8 @@ async function getPost(slug: string, locale: Locale): Promise<PostData | null> {
   try {
     if (process.env.WORDPRESS_GRAPHQL_URL) {
       const { getPostBySlug } = await import("@/lib/wordpress");
-      const p = await getPostBySlug(slug);
+      const language = locale.toUpperCase() as "EN" | "BG";
+      const p = await getPostBySlug(slug, language);
       if (p)
         return {
           title: p.title,
@@ -139,7 +140,7 @@ export default async function BlogPostPage({ params }: Props) {
       <BreadcrumbJsonLd
         locale={safeLocale}
         items={[
-          { name: dict.nav.home, url: `${SITE_URL}/${safeLocale}` },
+          { name: dict.nav.home, url: safeLocale === "en" ? SITE_URL : `${SITE_URL}/${safeLocale}` },
           { name: dict.nav.blog, url: `${SITE_URL}/${safeLocale}/blog` },
           { name: post.title, url: postUrl },
         ]}

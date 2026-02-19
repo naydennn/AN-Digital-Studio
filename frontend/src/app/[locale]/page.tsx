@@ -37,7 +37,7 @@ export default async function HomePage({
     <>
       <BreadcrumbJsonLd
         locale={safeLocale}
-        items={[{ name: dict.nav.home, url: `${SITE_URL}/${safeLocale}` }]}
+        items={[{ name: dict.nav.home, url: safeLocale === "en" ? SITE_URL : `${SITE_URL}/${safeLocale}` }]}
       />
       <script
         type="application/ld+json"

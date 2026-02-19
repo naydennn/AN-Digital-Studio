@@ -25,9 +25,18 @@ export default function LanguageSwitcher({ compact = false }: LanguageSwitcherPr
 
     document.cookie = `${LOCALE_COOKIE}=${newLocale};path=/;max-age=${60 * 60 * 24 * 365}`;
 
-    const segments = pathname.split("/");
-    segments[1] = newLocale;
-    router.push(segments.join("/"));
+    const segments = pathname.split("/").filter(Boolean);
+
+    if (segments.length > 0 && LOCALES.includes(segments[0] as Locale)) {
+      segments[0] = newLocale;
+    } else {
+      segments.unshift(newLocale);
+    }
+
+    let newPath = "/" + segments.join("/");
+    if (newPath === "/en") newPath = "/";
+
+    router.push(newPath);
   };
 
   return (

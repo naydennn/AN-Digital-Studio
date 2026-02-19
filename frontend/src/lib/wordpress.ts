@@ -40,9 +40,12 @@ async function fetchGraphQL<T>(
   return json.data;
 }
 
+type PolylangLanguage = "EN" | "BG";
+
 export async function getPosts(
   first: number = POSTS_PER_PAGE,
-  after?: string
+  after?: string,
+  language?: PolylangLanguage
 ): Promise<{
   posts: WPPost[];
   pageInfo: WPPageInfo;
@@ -54,8 +57,8 @@ export async function getPosts(
     };
   }>(
     `
-    query GetPosts($first: Int!, $after: String) {
-      posts(first: $first, after: $after, where: { status: PUBLISH }) {
+    query GetPosts($first: Int!, $after: String, $language: LanguageCodeFilterEnum) {
+      posts(first: $first, after: $after, where: { status: PUBLISH, language: $language }) {
         nodes {
           id
           databaseId
@@ -97,7 +100,7 @@ export async function getPosts(
       }
     }
   `,
-    { first, after }
+    { first, after, language }
   );
 
   return {
@@ -106,7 +109,10 @@ export async function getPosts(
   };
 }
 
-export async function getPostBySlug(slug: string): Promise<WPPost | null> {
+export async function getPostBySlug(
+  slug: string,
+  language?: PolylangLanguage
+): Promise<WPPost | null> {
   const data = await fetchGraphQL<{
     postBy: WPPost | null;
   }>(

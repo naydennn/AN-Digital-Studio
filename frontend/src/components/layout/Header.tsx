@@ -41,12 +41,13 @@ export default function Header() {
   const [activeSection, setActiveSection] = useState<string>("hero");
   const menuButtonRef = useRef<HTMLButtonElement>(null);
 
+  const homeBase = locale === "en" ? "" : `/${locale}`;
   const NAV_ITEMS = [
-    { label: dict.nav.home, href: `/${locale}/#hero`, sectionId: "hero" },
-    { label: dict.nav.about, href: `/${locale}/#about`, sectionId: "about" },
-    { label: dict.nav.services, href: `/${locale}/#services`, sectionId: "services" },
-    { label: dict.nav.portfolio, href: `/${locale}/#portfolio`, sectionId: "portfolio" },
-    { label: dict.nav.contact, href: `/${locale}/#contact`, sectionId: "contact" },
+    { label: dict.nav.home, href: `${homeBase}/#hero`, sectionId: "hero" },
+    { label: dict.nav.about, href: `${homeBase}/#about`, sectionId: "about" },
+    { label: dict.nav.services, href: `${homeBase}/#services`, sectionId: "services" },
+    { label: dict.nav.portfolio, href: `${homeBase}/#portfolio`, sectionId: "portfolio" },
+    { label: dict.nav.contact, href: `${homeBase}/#contact`, sectionId: "contact" },
     { label: dict.nav.blog, href: `/${locale}/blog`, sectionId: "blog" },
   ];
 
@@ -104,7 +105,7 @@ export default function Header() {
       <nav className="container mx-auto flex items-center justify-between gap-6 px-5 sm:px-6 lg:px-8 lg:gap-10">
         {/* Logo */}
         <Link
-          href={`/${locale}`}
+          href={locale === "en" ? "/" : `/${locale}`}
           className={`relative z-50 flex items-center gap-3 group transition-all duration-500 lg:gap-4 ${isScrolled ? "gap-2 lg:gap-3" : ""}`}
         >
           <Image
@@ -138,7 +139,7 @@ export default function Header() {
         <div className="hidden items-center gap-5 lg:flex lg:gap-8">
           <LanguageSwitcher compact={isScrolled} />
           <Link
-            href={`/${locale}/#contact`}
+            href={`${homeBase}/#contact`}
             className={`rounded-full gradient-gold-bg font-bold text-midnight transition-all duration-500 hover:shadow-lg hover:shadow-gold/20 hover:brightness-110 ${isScrolled ? "px-5 py-2 text-xs" : "px-7 py-2.5 text-[13px]"}`}
           >
             {dict.nav.getStarted}
@@ -252,7 +253,7 @@ export default function Header() {
                     className="mt-6"
                   >
                     <Link
-                      href={`/${locale}/#contact`}
+                      href={`${homeBase}/#contact`}
                       onClick={() => setIsOpen(false)}
                       className="block w-full rounded-full gradient-gold-bg py-3.5 text-center text-sm font-bold text-midnight"
                     >

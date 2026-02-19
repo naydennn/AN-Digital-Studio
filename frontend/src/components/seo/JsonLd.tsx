@@ -71,7 +71,7 @@ export function WebSiteJsonLd({
     name: SITE_NAME,
     alternateName: "AN Digital Studio",
     description,
-    url: `${SITE_URL}/${locale}`,
+    url: locale === "en" ? SITE_URL : `${SITE_URL}/${locale}`,
     inLanguage: LOCALE_BCP47[locale],
     alternateLanguage: LOCALE_BCP47[alternateLang],
     publisher: { "@id": ORGANIZATION_ID },

@@ -55,14 +55,14 @@ export async function generateMetadata({
       : ["web design", "web development", "digital agency", "SEO", "Sofia"],
     authors: [{ name: SITE_NAME }],
     alternates: {
-      canonical: `${SITE_URL}/${locale}`,
-      languages: { en: `${SITE_URL}/en`, bg: `${SITE_URL}/bg` },
+      canonical: isBg ? `${SITE_URL}/bg` : SITE_URL,
+      languages: { en: SITE_URL, bg: `${SITE_URL}/bg` },
     },
     openGraph: {
       type: "website",
       locale: isBg ? "bg_BG" : "en_US",
       alternateLocale: isBg ? "en_US" : "bg_BG",
-      url: `${SITE_URL}/${locale}`,
+      url: isBg ? `${SITE_URL}/bg` : SITE_URL,
       siteName: SITE_NAME,
       title,
       description,

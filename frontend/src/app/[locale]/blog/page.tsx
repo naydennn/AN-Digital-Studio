@@ -56,14 +56,14 @@ export default async function BlogPage({ params }: { params: Promise<{ locale: s
   const t = dict.blog;
 
   let posts: BlogPost[] = getPlaceholderPosts(dict);
-  try { if (process.env.WORDPRESS_GRAPHQL_URL) { const { getPosts } = await import("@/lib/wordpress"); const d = await getPosts(); if (d.posts.length > 0) posts = d.posts.map(p => ({ slug: p.slug, title: p.title, excerpt: p.excerpt.replace(/<[^>]*>/g, ""), date: p.date, image: p.featuredImage?.node.sourceUrl || null, author: p.author.node.name, category: p.categories.nodes[0]?.name || "General" })); } } catch { /* fallback */ }
+  try { if (process.env.WORDPRESS_GRAPHQL_URL) { const { getPosts } = await import("@/lib/wordpress"); const language = safeLocale.toUpperCase() as "EN" | "BG"; const d = await getPosts(undefined, undefined, language); if (d.posts.length > 0) posts = d.posts.map(p => ({ slug: p.slug, title: p.title, excerpt: p.excerpt.replace(/<[^>]*>/g, ""), date: p.date, image: p.featuredImage?.node.sourceUrl || null, author: p.author.node.name, category: p.categories.nodes[0]?.name || "General" })); } } catch { /* fallback */ }
 
   return (
     <div className="min-h-screen bg-midnight pt-32 pb-24">
       <BreadcrumbJsonLd
         locale={safeLocale}
         items={[
-          { name: dict.nav.home, url: `${SITE_URL}/${safeLocale}` },
+          { name: dict.nav.home, url: safeLocale === "en" ? SITE_URL : `${SITE_URL}/${safeLocale}` },
           { name: dict.nav.blog, url: `${SITE_URL}/${safeLocale}/blog` },
         ]}
       />

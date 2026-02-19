@@ -63,6 +63,20 @@ export function middleware(request: NextRequest) {
     return response;
   }
 
+  /* Root "/" → rewrite internally to "/en" so URL stays clean */
+  if (pathname === "/") {
+    const response = NextResponse.rewrite(new URL("/en", request.url));
+    addSecurityHeaders(response);
+    return response;
+  }
+
+  /* "/en" (exact home) → redirect to "/" — canonical EN home is "/" */
+  if (pathname === "/en") {
+    const response = NextResponse.redirect(new URL("/", request.url), 301);
+    addSecurityHeaders(response);
+    return response;
+  }
+
   /* Check if URL already has a valid locale prefix */
   const pathnameHasLocale = LOCALES.some(
     (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
