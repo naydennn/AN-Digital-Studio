@@ -2,12 +2,15 @@
 
 import { GoogleReCaptchaProvider } from "@google-recaptcha/react";
 
-const RECAPTCHA_SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY ?? "";
+interface RecaptchaProviderProps {
+  children: React.ReactNode;
+  siteKey?: string;
+}
 
-export default function RecaptchaProvider({ children }: { children: React.ReactNode }) {
-  if (!RECAPTCHA_SITE_KEY) return <>{children}</>;
+export default function RecaptchaProvider({ children, siteKey }: RecaptchaProviderProps) {
+  if (!siteKey) return <>{children}</>;
   return (
-    <GoogleReCaptchaProvider type="v2-checkbox" siteKey={RECAPTCHA_SITE_KEY}>
+    <GoogleReCaptchaProvider type="v2-checkbox" siteKey={siteKey}>
       {children}
     </GoogleReCaptchaProvider>
   );

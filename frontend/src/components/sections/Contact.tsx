@@ -6,7 +6,9 @@ import ScrollReveal from "@/components/effects/ScrollReveal";
 import SectionWrapper from "@/components/ui/SectionWrapper";
 import Button from "@/components/ui/Button";
 import { useTranslation } from "@/i18n/TranslationContext";
+import RecaptchaProvider from "@/components/providers/RecaptchaProvider";
 
+interface ContactProps { recaptchaSiteKey?: string; }
 interface FormData { name: string; email: string; subject: string; message: string; }
 const INITIAL: FormData = { name: "", email: "", subject: "", message: "" };
 
@@ -26,7 +28,7 @@ function FloatingInput({ id, label, type = "text", value, onChange, required = t
   return <div className="relative"><input id={id} type={type} placeholder={label} value={value} onChange={e => onChange(e.target.value)} required={required} autoComplete={autoComplete} className={cls} /><label htmlFor={id} className={`${lbl} ${f}`}>{label}</label></div>;
 }
 
-export default function Contact() {
+export default function Contact({ recaptchaSiteKey }: ContactProps) {
   const { dict } = useTranslation();
   const t = dict.contact;
   const [form, setForm] = useState<FormData>(INITIAL);
@@ -36,7 +38,7 @@ export default function Contact() {
   const onRecaptchaVerify = useCallback((token: string) => setRecaptchaToken(token), []);
   const onRecaptchaExpired = useCallback(() => setRecaptchaToken(null), []);
 
-  const recaptchaEnabled = !!process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
+  const recaptchaEnabled = !!recaptchaSiteKey;
   const canSubmit = status !== "sending" && (!recaptchaEnabled || !!recaptchaToken);
 
   const handleSubmit = async (e: FormEvent) => {
@@ -44,22 +46,12 @@ export default function Contact() {
     if (!canSubmit) return;
     setStatus("sending");
     try {
-      const url = process.env.NEXT_PUBLIC_WORDPRESS_API_URL;
-      if (url) {
-        const res = await fetch(`${url}/wp-json/contact/v1/submit`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ...form, recaptchaToken }),
-        });
-        if (!res.ok) throw new Error("Request failed");
-      } else {
-        /* No backend — use mailto fallback */
-        const subject = encodeURIComponent(form.subject || "Website Contact");
-        const body = encodeURIComponent(
-          `Name: ${form.name}\nEmail: ${form.email}\n\n${form.message}`
-        );
-        window.open(`mailto:contact@andigital.bg?subject=${subject}&body=${body}`);
-      }
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...form, recaptchaToken }),
+      });
+      if (!res.ok) throw new Error("Request failed");
       setStatus("sent");
       setForm(INITIAL);
       setRecaptchaToken(null);
@@ -73,6 +65,7 @@ export default function Contact() {
   const btnLabel = status === "sending" ? t.formSending : status === "sent" ? t.formSent : status === "error" ? t.formError : t.formSend;
 
   return (
+    <RecaptchaProvider siteKey={recaptchaSiteKey}>
     <SectionWrapper id="contact">
       <div className="absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gold/[0.03] blur-[120px] pointer-events-none" aria-hidden="true" />
       <div className="grid items-start gap-16 lg:grid-cols-2 lg:gap-24">
@@ -119,5 +112,6 @@ export default function Contact() {
         </ScrollReveal>
       </div>
     </SectionWrapper>
+    </RecaptchaProvider>
   );
 }

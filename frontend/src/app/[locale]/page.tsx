@@ -49,7 +49,7 @@ export default async function HomePage({
       <Portfolio />
       <LatestPosts locale={safeLocale} dict={dict} />
       <FAQ />
-      <Contact />
+      <Contact recaptchaSiteKey={process.env.RECAPTCHA_SITE_KEY} />
     </>
   );
 }
