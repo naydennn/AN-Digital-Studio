@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Montserrat } from "next/font/google";
 import { notFound } from "next/navigation";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import {
@@ -142,6 +143,7 @@ export default async function LocaleLayout({
             <Header />
             <main id="main-content">{children}</main>
             <Footer />
+            <SpeedInsights />
           </RecaptchaProvider>
         </TranslationProvider>
       </body>
