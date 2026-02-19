@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
 import ScrollReveal from "@/components/effects/ScrollReveal";
 import SectionWrapper from "@/components/ui/SectionWrapper";
 import { useTranslation } from "@/i18n/TranslationContext";
@@ -88,22 +87,19 @@ export default function FAQ() {
                   </span>
                 </button>
 
-                <AnimatePresence initial={false}>
-                  {isOpen && (
-                    <motion.div
-                      key="answer"
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
-                      className="overflow-hidden"
-                    >
-                      <p className="border-t border-gold/10 px-6 pb-5 pt-4 text-sm leading-relaxed text-stone sm:text-base">
-                        {item.answer}
-                      </p>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateRows: isOpen ? "1fr" : "0fr",
+                    transition: "grid-template-rows 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+                  }}
+                >
+                  <div className="overflow-hidden">
+                    <p className="border-t border-gold/10 px-6 pb-5 pt-4 text-sm leading-relaxed text-stone sm:text-base">
+                      {item.answer}
+                    </p>
+                  </div>
+                </div>
               </div>
             </ScrollReveal>
           );

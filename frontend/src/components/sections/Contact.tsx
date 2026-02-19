@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, type FormEvent } from "react";
+import { useState, useCallback, useEffect, type FormEvent } from "react";
 import { GoogleReCaptchaCheckbox } from "@google-recaptcha/react";
 import ScrollReveal from "@/components/effects/ScrollReveal";
 import SectionWrapper from "@/components/ui/SectionWrapper";
@@ -34,9 +34,22 @@ export default function Contact({ recaptchaSiteKey }: ContactProps) {
   const [form, setForm] = useState<FormData>(INITIAL);
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
+  const [recaptchaReady, setRecaptchaReady] = useState(false);
   const upd = (k: keyof FormData) => (v: string) => setForm(p => ({ ...p, [k]: v }));
   const onRecaptchaVerify = useCallback((token: string) => setRecaptchaToken(token), []);
   const onRecaptchaExpired = useCallback(() => setRecaptchaToken(null), []);
+
+  useEffect(() => {
+    if (!recaptchaSiteKey) return;
+    const section = document.getElementById("contact");
+    if (!section) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setRecaptchaReady(true); observer.disconnect(); } },
+      { rootMargin: "200px" }
+    );
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, [recaptchaSiteKey]);
 
   const recaptchaEnabled = !!recaptchaSiteKey;
   const canSubmit = status !== "sending" && (!recaptchaEnabled || !!recaptchaToken);
@@ -65,7 +78,7 @@ export default function Contact({ recaptchaSiteKey }: ContactProps) {
   const btnLabel = status === "sending" ? t.formSending : status === "sent" ? t.formSent : status === "error" ? t.formError : t.formSend;
 
   return (
-    <RecaptchaProvider siteKey={recaptchaSiteKey}>
+    <RecaptchaProvider siteKey={recaptchaReady ? recaptchaSiteKey : undefined}>
     <SectionWrapper id="contact">
       <div className="absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gold/[0.03] blur-[120px] pointer-events-none" aria-hidden="true" />
       <div className="grid items-start gap-16 lg:grid-cols-2 lg:gap-24">

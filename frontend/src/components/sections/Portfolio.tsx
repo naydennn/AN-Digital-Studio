@@ -44,12 +44,13 @@ export default function Portfolio() {
           ))}
         </div>
       </ScrollReveal>
-      <motion.div layout className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         <AnimatePresence mode="popLayout">
-          {filteredItems.map((item, idx) => {
+          {filteredItems.map((item) => {
             const translated = t.items[PORTFOLIO_ITEMS.indexOf(item)];
+            const isSmall = "imageSize" in item && item.imageSize === "small";
             return (
-              <motion.div key={item.id} layout initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} transition={{ duration: 0.35 }}>
+              <motion.div key={item.id} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} transition={{ duration: 0.3 }}>
                 <a
                   href={item.url}
                   target={item.url.startsWith("http") ? "_blank" : undefined}
@@ -59,18 +60,16 @@ export default function Portfolio() {
                   <div className="relative aspect-[4/3] overflow-hidden bg-midnight">
                     <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(201,169,110,0.05),transparent_70%)]" />
                     {item.image ? (
-                      item.image.startsWith("http") ? (
-                        <div className="absolute inset-0 flex items-center justify-center p-6">
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img
-                            src={item.image}
-                            alt={item.title}
-                            className={`object-contain transition-transform duration-500 group-hover:scale-105 ${"imageSize" in item && item.imageSize === "small" ? "max-h-[55%] max-w-[55%]" : "max-h-full max-w-full"}`}
-                          />
-                        </div>
-                      ) : (
-                        <Image src={item.image} alt={item.title} fill className="object-contain object-center transition-transform duration-500 group-hover:scale-105" sizes="(max-width:640px)100vw,(max-width:1024px)50vw,33vw" />
-                      )
+                      <div className={`absolute inset-0 flex items-center justify-center ${isSmall ? "p-10" : "p-6"}`}>
+                        <Image
+                          src={item.image}
+                          alt={item.title}
+                          fill
+                          loading="lazy"
+                          sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 33vw"
+                          className={`object-contain transition-transform duration-500 group-hover:scale-105 ${isSmall ? "!p-8" : ""}`}
+                        />
+                      </div>
                     ) : (
                       <div className="flex h-full w-full items-center justify-center"><svg className="h-14 w-14 text-gold/10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={0.75} d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z" /></svg></div>
                     )}
@@ -88,7 +87,7 @@ export default function Portfolio() {
             );
           })}
         </AnimatePresence>
-      </motion.div>
+      </div>
       <ScrollReveal>
         <p className="mt-12 border-t border-gold-border/10 pt-8 text-center text-sm italic tracking-wide text-stone/90">
           {t.moreProjects}
