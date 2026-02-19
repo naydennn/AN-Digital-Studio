@@ -50,6 +50,11 @@ export async function generateMetadata({
     metadataBase: new URL(SITE_URL),
     title: { default: title, template: `%s | ${SITE_NAME}` },
     description,
+    icons: {
+      icon: { url: "/logo.png", type: "image/png" },
+      apple: { url: "/logo.png", type: "image/png" },
+      shortcut: "/logo.png",
+    },
     keywords: isBg
       ? ["уеб дизайн", "уеб разработка", "дигитална агенция", "SEO", "София"]
       : ["web design", "web development", "digital agency", "SEO", "Sofia"],
